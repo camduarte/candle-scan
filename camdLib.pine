@@ -2,8 +2,8 @@
 // © cdu4rte
 //@version=5
 
-// @description Herramientas para detectar estados y características en velas japonesas.
-library (title = "Herramientas")
+// @description Herramientas para detectar características en velas japonesas.
+library (title = "camdLib")
 
 const int MOMENTUM_LENGTH = 5
 const int SESSIONS_LENGTH = 5
@@ -188,13 +188,14 @@ export isBodyInsidePrevBody(int refCandle, int prevCandle) =>
         else
             close[refCandle] > close[prevCandle] and open[refCandle] < open[prevCandle]
 
-// Determina si el cuerpo de la vela de referencia se encuentra en la zona media-alta de la vela anterior.
-// position La ubicación de la vela de referencia.
-export isBodyInTheUpperMiddleZone(int position) =>
-    indexPrevCandle = position + 1
+// @function Determina si el cuerpo de la vela se encuentra en la zona media-alta de la vela anterior.
+// @param index El índice de la vela.
+// @returns true si el cuerpo de la vela está dentro de la zona media-alta de la vela anterior.
+export isBodyInTheUpperMiddleZone(int index) =>
+    indexPrevCandle = index + 1
     halfBody = getBodySize(indexPrevCandle) / 2
     prevPrice = math.max(close[indexPrevCandle], open[indexPrevCandle]) - halfBody
-    math.max(close[position], open[position]) >= prevPrice
+    math.max(close[index], open[index]) >= prevPrice
 
 // Determina si el mínimo de la vela de referencia está por debajo del mínimo de la vela anterior.
 // refCandle El índice de la vela de referencia.
@@ -263,3 +264,10 @@ export isCloseNearToPrevClose(int idx1, int idx2) =>
     candleRange = math.abs(close[idx2] - open[idx2])
     tolerance = candleRange * 0.05
     close[idx1] < close[idx2] + tolerance and close[idx1] > close[idx2] - tolerance
+
+// @function Determina si la apertura de la vela se encuentra dentro del cuerpo real de la vela anterior.
+// @param index El índice de la vela.
+// @returns true si el precio de apertura de la vela está dentro del cuerpo real de la vela anterior.
+export isOpenInsidePrevBody(int index) =>
+    open[index] >= math.min(open[index + 1], close[index + 1]) and
+     open[index] <= math.max(open[index + 1], close[index + 1])

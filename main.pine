@@ -2,9 +2,9 @@
 // © cdu4rte
 
 //@version=5
-indicator(title = "Patrones", overlay = "true")
+indicator(title = "Patrones", overlay = true)
 
-import camdLib
+import cdu4rte/camdPattern/1
 
 var int bullishBeltHoldLineCounter = 0
 var int bearishBeltHoldLineCounter = 0
@@ -18,276 +18,51 @@ var int bearishBreakawayCounter = 0
 var int concealingBabySwallowCounter = 0
 var int stickSandwichCounter = 0
 
-// Función para verificar el patrón de vela martillo
-isHammerPattern() =>    
-    camdLib.isBearishTrend() and
-     close != open and
-     camdLib.getLowerShadow() >= 2 * camdLib.getBodySize() and
-     //math.abs(camdLib.getBodySize()) < 0.1 * close and  
-     camdLib.getUpperShadow() < 0.25 * camdLib.getBodySize()
-
-// Función para verificar el patrón de vela martillo
-// position La ubicación de la vela.
-isHammerPattern(position) => 
-    camdLib.isBearishTrend() and
-     close[position] != open[position] and
-     camdLib.getLowerShadow(position) >= 2 * camdLib.getBodySize(position) and
-     //math.abs(camdLib.getBodySize()) < 0.1 * close and  
-     camdLib.getUpperShadow(position) < 0.25 * camdLib.getBodySize(position)
-
-// Martillo invertido o inverted hammer.
-isInvertedHammerPattern() =>
-    camdLib.isBearishTrend() and
-     close != open and
-     camdLib.getUpperShadow() >= camdLib.getBodySize() * 2 and
-     camdLib.getLowerShadow() < camdLib.getBodySize() * 0.25
-
-// Ahorcado o Hanging Man.
-isHangingManPattern() =>
- camdLib.isBullishTrend() and
-  close != open and
-  camdLib.getLowerShadow() >= camdLib.getBodySize() * 2 and
-  camdLib.getUpperShadow() < camdLib.getBodySize() * 0.25
-
-// Estrella Fugaz o Shooting Star.
-isShootingStarPattern() =>
-    camdLib.isBullishTrend() and
-     close != open and
-     camdLib.getUpperShadow() >= camdLib.getBodySize() * 2 and
-     camdLib.getLowerShadow() < camdLib.getBodySize() * 0.25
-
-// Presa de cinturón alcista o bullish belt-hold line.
-isBullishBeltHoldLinePattern() =>
-    camdLib.isBearishTrend() and
-     close > open and open == low and
-     camdLib.getUpperShadow() < camdLib.getBodySize() * 0.25 and
-     camdLib.getBodySize() >= camdLib.getAverageCandleSize(0, 20) * 2
-
-// Presa de cinturón bajista o bearish belt-hold line.
-isBearishBelthHoldLinePattern() =>
-    camdLib.isBullishTrend() and
-     close < open and open == high and
-     camdLib.getLowerShadow() < camdLib.getBodySize() * 0.25 and
-     camdLib.getBodySize() >= camdLib.getAverageCandleSize(0, 20) * 2
-
-// Envolvente alcista o bullish engulfing.
-isBullishEngulfingPattern() =>
-    camdLib.isBearishTrend() and 
-     close > open and close[1] < open[1] and
-     close > open[1] and open < close[1]
-
-// Envolvente bajista o Bearish engulfing.
-isBearishEngulfingPattern() =>
-    camdLib.isBullishTrend() and
-     close < open and close[1] > open[1] and
-      close < open[1] and open > close[1]
-
-// Función para verificar el patrón de vela Harami alcista
-isBullishHaramiPattern() => 
-    camdLib.isBearishTrend() and 
-     close > open and close[1] < open[1] and
-     close < open[1] and open > close[1]
-
-// Función para verificar el patrón de vela Harami bajista
-isBearishHaramiPattern() => 
-    camdLib.isBullishTrend() and
-     close < open and close[1] > open[1] and
-     close > open[1] and open < close[1]
-
-isDojiPattern() =>
-    // Calcular el tamaño del cuerpo de la vela
-    body_size = math.abs(close - open)
-    // Calcular la sombra superior e inferior
-    upper_shadow = high - math.max(open, close)
-    lower_shadow = math.min(open, close) - low
-    // Verificar si la vela es un Doji
-    //body_size < 0.0025 * close and upper_shadow < 0.05 * close and lower_shadow < 0.05 * close
-    body_size < 0.0025 * close
-
-// Paloma mensajera o Homing pigeon
-isHomingPigeonPattern() =>
-    camdLib.isBearishTrend() and
-     close < open and close[1] < open[1] and
-     high < open[1] and low > close[1]
-
-// Línea de contraataque alcista o bullish counterattack line
-isBullishCounterAttackLinePattern() =>
-    camdLib.isBearishTrend() and
-     camdLib.getBodySize(1) > camdLib.getAverageCandleSize(1) and
-     close[1] < open[1] and 
-     camdLib.getBodySize() > camdLib.getAverageCandleSize(0) and
-     close > open and
-     camdLib.calculatePriceDifference(close[1], close) < close * 0.0025
-
-// Línea de contraataque bajista o bearish counterattack line.
-isBearishCounterAttackLinePattern() =>
-    camdLib.isBullishTrend() and
-     camdLib.getBodySize(1) > camdLib.getAverageCandleSize(1) and
-     close[1] > open[1] and 
-     camdLib.getBodySize() > camdLib.getAverageCandleSize(0) and
-     close < open and
-     camdLib.calculatePriceDifference(close[1], close) < close * 0.0025
-
-// Tres soldados blancos o three white soldiers.
-isThreeWhiteSoldiersPattern() =>
-    camdLib.isBearishTrend() and
-     close[2] > open[2] and close[1] > open[1] and close > open and    
-     camdLib.getUpperShadow(2) <= camdLib.getBodySize(2) * 0.25 and camdLib.getUpperShadow(1) <= camdLib.getBodySize(1) * 0.25 and camdLib.getUpperShadow() <= camdLib.getBodySize() * 0.25 and
-     close[2] < close[1] and close[1] < close and
-     open[1] > open[2] and open[1] < close[2] and
-     open > open[1] and open < close[1]
-
-// Tres cuervos negros o three black crows.
-isThreeBlackCrowsPattern() =>
-    camdLib.isBullishTrend() and
-     close[2] < open[2] and close[1] < open[1] and close < open and    
-     camdLib.getLowerShadow(2) <= camdLib.getBodySize(2) * 0.25 and camdLib.getLowerShadow(1) <= camdLib.getBodySize(1) * 0.25 and camdLib.getLowerShadow() <= camdLib.getBodySize() * 0.25 and
-     close[2] > close[1] and close[1] > close and
-     open[1] < open[2] and open[1] > close[2] and
-     open < open[1] and open > close[1]
-
-// Tres cuervos negros idénticos o three identical black crows.
-isThreeIdenticalBlackCrowsPattern()  =>
-    camdLib.isBullishTrend() and
-     close[2] < open[2] and close[1] < open[1] and close < open and
-     camdLib.getLowerShadow(2) <= camdLib.getBodySize(2) * 0.25 and camdLib.getLowerShadow(1) <= camdLib.getBodySize(1) * 0.25 and camdLib.getLowerShadow() <= camdLib.getBodySize() * 0.25 and
-     close[1] < close[2] and close < close[1] and
-     camdLib.calculatePriceDifference(close[2], open[1]) < open[1] * 0.0025 and
-     camdLib.calculatePriceDifference(close[1], open) < open * 0.0025
-
-// Verifica si la apertura de la vela indicada está dentro del cuerpo de la vela anterior.
-camdLib.isOpenInsidePrevBody(position) =>
-    if camdLib.isWhite(close[position + 1], open[position + 1])
-        open[position] < close[position + 1] and open[position] > open[position + 1] 
-    else
-        open[position] < open[position + 1] and open[position] > close[position + 1]
-
-//Parada previa o advance block.
-isAdvanceBlockPattern() =>
-    camdLib.isBullishTrend() and
-     camdLib.isWhite(close[2], open[2]) and camdLib.isWhite(close[1], open[1]) and camdLib.isWhite(close, open) and
-     camdLib.isHigherClose(close[1], close[2]) and  camdLib.isHigherClose(close, close[1]) and
-     camdLib.isOpenInsidePrevBody(1) and camdLib.isOpenInsidePrevBody(0) and
-     camdLib.isExhaustionPattern(close[2], open[2], close[1], open[1], close, open)
-
-// Reflexión o deliberation pattern.
-isDeliberationPattern() =>
-    camdLib.isBullishTrend() and
-     camdLib.isWhite(close[2], open[2]) and camdLib.isWhite(close[1], open[2]) and camdLib.isWhite(close, open) and
-     camdLib.isHigherClose(close[1], close[2]) and
-     camdLib.isOpenInsidePrevBody(1) and
-     camdLib.isExhaustionPattern(close[1], open[1], close, open, high) and
-     (not camdLib.isHigherClose(close, close[1]) or camdLib.isBullishGap() or isDojiPattern())
-
-// Suelo de tres ríos o Unique three rivers bottom.
-isUniqueThreeRiversBottomPattern() =>
-    camdLib.isBearishTrend() and
-     camdLib.isBlack(close[2], open[2]) and camdLib.isBigBody(2, 5) and
-     isHammerPattern(1) and camdLib.isBlack(close[1], open[1]) and camdLib.isBodyInsidePrevBody(1) and
-     isBodyInTheUpperMiddleZone(1) and camdLib.isLowerLow(1) and
-     camdLib.isWhite(close, open) and camdLib.isBodyInsidePrevBody(0, 2) and isBodyBelowPrevBody(0, 1)
-
-// Tres estrellas al sur o Three stars in the south.
-isThreeStarsInTheSouthPattern() =>
-    candle1 = 2, candle2 = 1, candle3 = 0
-    camdLib.isBearishTrend() and
-     camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isLongShadow(candle1) and
-     camdLib.isBlack(close[candle2], open[candle2]) and camdLib.getBodySize(candle2) < camdLib.getBodySize(candle1) and  not camdLib.isLowerLow(candle2) and
-     camdLib.isBlack(close[candle3], open[candle3]) and not camdLib.hasShadows(candle3) and camdLib.isInsidePrevRange(candle3, candle2)
-
-// Escape alcista o Bullish Breakaway.
-isBullishBreakawayPattern() =>
-    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
-    camdLib.isBearishTrend() and
-     camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, 5) and
-     camdLib.isBlack(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, 5) and camdLib.isBearishGapRelativeToTheShadows(candle2, candle1) and
-     open[candle3] < low[candle2] and open[candle4] < low[candle2]and 
-     not camdLib.isHigherClose(close[candle3], close[candle2]) and not camdLib.isHigherClose(close[candle4], close[candle4]) and
-     camdLib.isBlack(close[candle3], open[candle3]) and camdLib.isBlack(close[candle4], open[candle4]) and
-     camdLib.isWhite(close[candle5], open[candle5]) and close[candle5] < low[candle1] and close[candle5] > high[candle2] and
-     camdLib.isSmallBody(candle3, 5) and camdLib.isSmallBody(candle4, 5)
-
-// Escape bajista o Bearish Breakaway.
-isBearishBreakawayPattern() =>
-    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
-    camdLib.isBullishTrend() and
-     camdLib.isWhite(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
-     camdLib.isWhite(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isBullishGapRelativeToTheShadows(candle2, candle1) and
-     open[candle3] > low[candle2] and open[candle4] > low[candle2] and
-     camdLib.isHigherClose(close[candle3], close[candle2]) and camdLib.isHigherClose(close[candle4], close[candle3]) and
-     camdLib.isWhite(close[candle3], open[candle3]) and camdLib.isWhite(close[candle4], open[candle4]) and
-     camdLib.isBlack(close[candle5], open[candle5]) and
-     close[candle5] > high[candle1] and close[candle5] < low[candle2]
-
-// Patrón de bebé oculto o Concealing baby swallow.
-isConcealingBabySwallowPattern() =>
-    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
-   camdLib.isBearishTrend() and 
-     camdLib.isBlack(close[candle2], open[candle2]) and camdLib.isBlack(close[candle3], open[candle3]) and
-     not camdLib.hasShadows(candle2) and not camdLib.hasShadows(candle3) and
-     camdLib.isLowerClose(close[candle2], close[candle1]) and
-     camdLib.isLowerClose(close[candle3], close[candle2]) and
-     camdLib.isBlack(close[candle4], open[candle4]) and
-     camdLib.isBearishGapRelativeToBodies(candle4) and
-     high[candle4] > close[candle2] and
-     camdLib.isBlack(close[candle5], open[candle5]) and
-     camdLib.isBullishGapRelativeToBodies(candle5) and
-     camdLib.isEngulfingBar(candle5) and  not camdLib.hasShadows(candle5)
-
-// Stick Sandwich.
-isStickSandwichPattern() =>
-    candle1 = 2, candle2 = 1, candle3 = 0
-    camdLib.isBearishTrend() and
-     camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
-     camdLib.isWhite(close[candle2], open[candle2]) and
-     low[candle2] > close[candle1] and
-     camdLib.isBlack(close[candle3], open[candle3]) and camdLib.isEngulfingBar(candle3) and camdLib.isCloseNearToPrevClose(candle3, candle1)
-
-isThreeIdenticalBlackCrows = isThreeIdenticalBlackCrowsPattern()
-isAdvanceBlock = isAdvanceBlockPattern()
-isDeliberation = isDeliberationPattern()
-isUniqueThreeRiversBottom = isUniqueThreeRiversBottomPattern()
-isThreeStarsInTheSouth = isThreeStarsInTheSouthPattern()
-isBullishBreakaway = isBullishBreakawayPattern()
-isBearishBreakaway = isBearishBreakawayPattern()
-isConcealingBabySwallow =  isConcealingBabySwallowPattern()
-isStickSandwich = isStickSandwichPattern()
+isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
+isAdvanceBlock = camdPattern.isAdvanceBlockPattern()
+isDeliberation = camdPattern.isDeliberationPattern()
+isUniqueThreeRiversBottom = camdPattern.isUniqueThreeRiversBottomPattern()
+isThreeStarsInTheSouth = camdPattern.isThreeStarsInTheSouthPattern()
+isBullishBreakaway = camdPattern.isBullishBreakawayPattern()
+isBearishBreakaway = camdPattern.isBearishBreakawayPattern()
+isConcealingBabySwallow =  camdPattern.isConcealingBabySwallowPattern()
+isStickSandwich = camdPattern.isStickSandwichPattern()
 
 // Agrego etiqueta del patrón al gráfico.
-if isHammerPattern()
+if camdPattern.isHammerPattern()
     label.new(x = bar_index, y = low, text = "Martillo", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isInvertedHammerPattern()
+else if camdPattern.isInvertedHammerPattern()
     label.new(x = bar_index, y = low, text = "Martillo invertido", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isHangingManPattern()
+else if camdPattern.isHangingManPattern()
     label.new(x = bar_index, y = low, text = "Ahorcado", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isShootingStarPattern()
+else if camdPattern.isShootingStarPattern()
     label.new(x = bar_index, y = low, text = "Estrella Fugaz", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isBullishBeltHoldLinePattern()
+else if camdPattern.isBullishBeltHoldLinePattern()
     label.new(x = bar_index, y = low, text = "Presa de cinturón alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
     bullishBeltHoldLineCounter := bullishBeltHoldLineCounter + 1
-else if isBearishBelthHoldLinePattern()
+else if camdPattern.isBearishBelthHoldLinePattern()
     label.new(x = bar_index, y = low, text = "Presa de cinturón bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
     bearishBeltHoldLineCounter := bearishBeltHoldLineCounter + 1
-else if isBullishEngulfingPattern()
+else if camdPattern.isBullishEngulfingPattern()
     label.new(x = bar_index, y = low, text = "Envolvente alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isBearishEngulfingPattern()
+else if camdPattern.isBearishEngulfingPattern()
     label.new(x = bar_index, y = low, text = "Envolvente bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isBullishHaramiPattern()
+else if camdPattern.isBullishHaramiPattern()
     label.new(x = bar_index, y = low, text = "Harami alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isBearishHaramiPattern()
+else if camdPattern.isBearishHaramiPattern()
     label.new(x = bar_index, y = low, text = "Harami bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-//else if isDojiPattern()
+//else if camdPattern.isDojiPattern()
 //    label.new(x = bar_index, y = low, text = "Doji", style=label.style_label_down, color=color.yellow, size=size.small, yloc=yloc.belowbar)
-else if isHomingPigeonPattern()
+else if camdPattern.isHomingPigeonPattern()
     label.new(x = bar_index, y = low, text = "Paloma mensajera", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
     homingPigeonCounter := homingPigeonCounter + 1
-else if isBullishCounterAttackLinePattern()
+else if camdPattern.isBullishCounterAttackLinePattern()
     label.new(x = bar_index, y = low, text = "Línea de contraataque alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isBullishCounterAttackLinePattern()
+else if camdPattern.isBullishCounterAttackLinePattern()
     label.new(x = bar_index, y = low, text = "Línea de contraataque bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isThreeWhiteSoldiersPattern()
+else if camdPattern.isThreeWhiteSoldiersPattern()
     label.new(x = bar_index, y = low, text = "Tres soldados blancos", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if isThreeBlackCrowsPattern()
+else if camdPattern.isThreeBlackCrowsPattern()
     label.new(x = bar_index, y = low, text = "Tres cuervos negros", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
 else if isThreeIdenticalBlackCrows
     label.new(x = bar_index, y = low, text = "Tres cuervos negros idénticos", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
