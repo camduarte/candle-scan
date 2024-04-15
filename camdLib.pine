@@ -1,0 +1,265 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © cdu4rte
+//@version=5
+
+// @description Herramientas para detectar estados y características en velas japonesas.
+library (title = "Herramientas")
+
+const int MOMENTUM_LENGTH = 5
+const int SESSIONS_LENGTH = 5
+
+// Define una función para obtener la longitud del momento
+export getMomentumLength() =>
+    MOMENTUM_LENGTH
+
+// Define una función para obtener la longitud de sesiones
+export getSessionsLength() =>
+    SESSIONS_LENGTH
+
+// Función para calcular el cuerpo de la vela.
+export getBodySize() => 
+    math.abs(close - open)
+
+// Función para calcular la sombra superior
+export getUpperShadow() => 
+    high - (open > close ? open : close)
+
+// Función para calcular la sombra superior
+// position La posición de la vela.
+export getUpperShadow(int position) => 
+   high[position] - (open[position] > close[position] ? open[position] : close[position])
+
+// Función para calcular la sombra inferior
+export getLowerShadow() => (open < close ? open : close) - low
+
+// Función para calcular la sombra inferior
+// position La posición de la vela de la cual se desea obtener el dato.
+export getLowerShadow(int position) => (open[position] < close[position] ? open[position] : close[position]) - low[position]
+
+// Función para verificar si una vela es blanca.
+// c El precio de cierre.
+// o El precio de apertura
+export isWhite(float c, float o) =>
+    c > o
+
+// Función para verificar si una vela es negra.
+// c El precio de cierre.
+// o El precio de apertura.
+export isBlack(float c, float o) =>
+    c > o
+
+// Función para verificar si el cierre de la vela está por encima del cierre anterior.
+// c El precio de cierre de la vela.
+// c_prev El precio de cierre de la vela anterior.
+export isHigherClose(float c, float c_prev) =>
+    c > c_prev
+
+// Función para verificar si el cierre de la vela está por debajo del cierre anterior.
+// c El precio de cierre de la vela.
+// c_prev El precio de cierre de la vela anterior.
+export isLowerClose(float c, float c_prev) =>
+    c < c_prev
+
+// Obtiene el tamaño de la vela.
+// position El indice de la vela.
+// index El tamañoo de la vela.  
+export getBodySize(int index) =>
+    math.abs(close[index] - open[index])
+
+// Calcula el tamaño promedio de las 5 velas anteriores.
+// position La posición de la vela de referencia.
+export getAverageCandleSize(int position) =>
+    float result = 0
+    for i = 1 to 5
+        result += getBodySize(position + i)
+    result / 5
+
+// Calcula el tamaño promedio de las 5 velas anteriores.
+// position La posición de la vela de referencia.
+// length Cantidad de sesiones anteriores
+export getAverageCandleSize(int position, int length) =>
+    float result = 0
+    for i = 1 to length
+        result += getBodySize(position + i)
+    result / length
+
+// Determina si el cuerpo de la vela es grande.
+// position La posicón de la vela de referencia.
+// amount cantidad de velas anterioes.
+export isBigBody(int position, int amount) =>
+    getBodySize(position) > getAverageCandleSize(position, amount)
+
+// Determina si el cuerpo de la vela es pequeña.
+// pos el índice de la vela de referencia.
+// length Cantidad de velas anterioes.
+export isSmallBody(int pos, int length) =>
+    getBodySize(pos) < getAverageCandleSize(pos, length)
+
+// Calcula la diferencia entre dos precios y devuelve el resultado sin signo.
+// price1 El precio.
+// price2 El precio.
+// return La diferencia entre los dos precios sin signo.
+export calculatePriceDifference(float price1, float price2) =>
+    math.abs(price1 - price2)
+
+// Función para verificar si las dos últimas velas muestran signos de agotamiento de la tendencia alcista.
+// c1 El precio de cierre de la vela perteneciente a dos períodos previos.
+// o1 El precio de apertura de la vela perteneciente a dos períodos previos.
+// c2 El precio de cierre de la vela perteneciente a un período previos.
+// o2 El precio de apertura de la vela perteneciente a un período previos.
+// c3 El precio de cierre de la vela actual.
+// o2 El precio de apertura de la vela actual.
+export isExhaustionPattern(float c1, float o1, float c2, float o2, float c3, float o3) =>
+    // Las sombras superiores son largas o los cuerpos reales son pequeños
+    (high - math.max(c2, o2) > 2 * (c2 - o2) and // Sombras superiores largas de la vela 2
+     high - math.max(c3, o3) > 2 * (c3 - o3)) or // Sombras superiores largas de la vela 3
+     ((c2 - o2) < (c1 - o1) * 0.5 and // El cuerpo real de la vela 2 es pequeño
+     (c3 - o3) < (c2 - o2) * 0.5) // El cuerpo real de la vela 3 es pequeño
+
+// Función para verificar si la última vela muestra signo de agotamiento de la tendencia alcista.
+// c1 El precio de cierre de la vela anterior.
+// o1 El precio de apertura de la vela anterior.
+// c2 El precio de cierre de la vela que se desea analizar agotamiento.
+// o2 El precio de apertura de la vela que se desea analizar agotamiento.
+// h2 El precio máximo de la vela que se desea analizar agotamiento.
+export isExhaustionPattern(float c1, float o1, float c2, float o2, float h2) =>
+    // Las sombras superiores son largas o los cuerpos reales son pequeños
+    h2 - math.max(c2, o2) > 2 * math.abs(c2 - o2) or // Sombras superiores largas de la vela 2
+     math.abs(c2 - o2) < math.abs(c1 - o1) * 0.5 // El cuerpo real de la vela 2 es pequeño
+
+// Verifica si existe hueco alcista.
+export isBullishGap() =>
+    open > high[1]
+
+// Verifica si existe hueco bajista.
+export isBearishGap() =>
+   open < low[1]
+
+// Verifica si existe hueco bajista respecto a los cuerpos reales.
+// index El índice de la vela de referencia.
+// return true si existe hueco bajista respecto a los cuerpos reales. 
+export  isBearishGapRelativeToBodies(int index) =>
+   open < math.min(close[index + 1], open[index + 1])
+
+// Verifica si existe hueco alcista respecto a los cuerpos reales.
+// index El índice de la vela de referencia.
+// returns true si existe hueco alcista respecto a los cuerpos reales. 
+export isBullishGapRelativeToBodies(int index) =>
+   open > math.max(close[index + 1], open[index + 1])
+
+// Determina si existe hueco bajista con respecto a las sombras.
+// refCandle El índice de la vela de referencia.
+// prevCandle El índice de la vela anterior.
+export isBearishGapRelativeToTheShadows(int refCandle, int prevCandle) =>
+   high[refCandle] < low[prevCandle]
+
+// Determina si existe hueco alcista con respecto a las sombras.
+// refCandle El índice de la vela de referencia.
+// prevCandle El índice de la vela anterior.
+export isBullishGapRelativeToTheShadows(int refCandle, int prevCandle) =>
+   low[refCandle] > high[prevCandle]
+
+// Determina si el cuerpo de la vela de referencia está contenida dentro de la vela anterior.
+// position La ubicación de la vela.
+export isBodyInsidePrevBody(int position) =>
+    if isWhite(close[position], open[position])
+        if isWhite(close[position + 1], open[position + 1])
+            close[position] < close[position + 1] and open[position] > open[position + 1]
+        else
+            close[position] < open[position + 1] and open[position] > close[position + 1]
+    else
+        if isWhite(close[position + 1], open[position + 1])
+            close[position] > open[position + 1] and open[position] < close[position + 1]
+        else
+            close[position] > close[position + 1] and open[position] < open[position + 1]
+
+// Determina si el cuerpo de la vela de referencia está contenida dentro de la vela previa indicada.
+// refCandle La ubicación de la vela de referencia.
+// prevCandle El índice de la vela previa.
+export isBodyInsidePrevBody(int refCandle, int prevCandle) =>
+    if isWhite(close[refCandle], open[refCandle])
+        if isWhite(close[prevCandle], open[prevCandle])
+            close[refCandle] < close[prevCandle] and open[refCandle] > open[prevCandle]
+        else
+            close[refCandle] < open[prevCandle] and open[refCandle] > close[prevCandle]
+    else
+        if isWhite(close[prevCandle], open[prevCandle])
+            close[refCandle] > open[prevCandle] and open[refCandle] < close[prevCandle]
+        else
+            close[refCandle] > close[prevCandle] and open[refCandle] < open[prevCandle]
+
+// Determina si el cuerpo de la vela de referencia se encuentra en la zona media-alta de la vela anterior.
+// position La ubicación de la vela de referencia.
+export isBodyInTheUpperMiddleZone(int position) =>
+    indexPrevCandle = position + 1
+    halfBody = getBodySize(indexPrevCandle) / 2
+    prevPrice = math.max(close[indexPrevCandle], open[indexPrevCandle]) - halfBody
+    math.max(close[position], open[position]) >= prevPrice
+
+// Determina si el mínimo de la vela de referencia está por debajo del mínimo de la vela anterior.
+// refCandle El índice de la vela de referencia.
+export isLowerLow(int refCandle) =>
+    prevCandle = refCandle + 1
+    low[refCandle] < low[prevCandle]
+
+// Determina si el cuerpo de la vela de referencia está por debajo del cuerpo de la vela previa indicada.
+// refCandle El índice de la vela de referencia.
+// prevCandle El índice de la vela previa.
+export isBodyBelowPrevBody(int refCandle, int prevCandle) =>
+    math.max(close[refCandle], open[refCandle]) < math.min(close[prevCandle], open[prevCandle])
+
+// Determina si el cuerpo de la vela de referencia está por encima del cuerpo de la vela previa indicada.
+// refCandle El índice de la vela de referencia.
+// prevCandle El índice de la vela previa.
+export isBodyAbovePrevBody(int refCandle, int prevCandle) =>
+    math.min(close[refCandle], open[refCandle]) > math.max(close[prevCandle], open[prevCandle])
+
+// Determina si la mecha inferior es larga.
+// pos El índice de la vela.
+export isLongShadow(int pos) =>
+    getLowerShadow(pos) > getBodySize(pos)
+
+// Determina si la vela tiene sombras.
+// index El índice de la vela.
+export hasShadows(int index) =>
+    high[index] != math.max(close[index], open[index]) or
+     low[index] != math.min(close[index], open[index])
+
+// Determina si el cuerpo de la vela está dentro del rango de la vela anterior indicada.
+// refCandle El índice de la vela de referencia.
+// prevCandle El índice de la vela anterior.
+export isInsidePrevRange(int refCandle, int prevCandle) =>
+    math.max(close[refCandle], open[refCandle]) < high[prevCandle] and
+     math.min(close[refCandle], open[refCandle]) > low[prevCandle]
+
+// Determina si la vela envuelve la vela anterior.
+// index El índice de la vela de referencia.
+// return true si la vela envuelve la vela anterior.
+export isEngulfingBar(int index) =>
+    math.max(close[index], open[index]) > math.max(close[index + 1], open[index + 1]) and
+     math.min(close[index], open[index]) < math.min(close[index + 1], open[index + 1])
+
+// Determina si la tendencia de corto plazo es alcista.
+// @returns true si la tendencia de corto plazo es alcista.
+export isBullishTrend() =>
+    ta.mom(close, MOMENTUM_LENGTH) > 0
+
+// Determina si la tendencia de corto plazo es bajista.
+// retur true si la tendencia de corto plazo es bajista.
+export isBearishTrend() =>
+    ta.mom(close, MOMENTUM_LENGTH) < 0
+
+// Determina si el precio de cierre es cercano al precio mínimo.
+// index El índice de la vela de referencia.
+// return true si el precio de cierre está cerca al precio mínimo.
+export isCloseNearToLow(int index) =>
+    close[index] <= low[index] + (high[index] - low[index]) * 0.05
+
+//Determina si el precio de cierre está cerca del precio de cierre de la vela anterior.
+// idx1 El índice de la vela de referencia.
+// idx2 El índice de la vela anterior.
+// return true si el precio de cierre está cercano al precio de cierre de la vela anterior.
+export isCloseNearToPrevClose(int idx1, int idx2) =>
+    candleRange = math.abs(close[idx2] - open[idx2])
+    tolerance = candleRange * 0.05
+    close[idx1] < close[idx2] + tolerance and close[idx1] > close[idx2] - tolerance
