@@ -5,7 +5,7 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/3
+import cdu4rte/camdLib/10
 
 // Función para verificar el patrón de vela martillo
 export isHammerPattern() =>    
@@ -221,8 +221,8 @@ export isConcealingBabySwallowPattern() =>
      camdLib.isBullishGapRelativeToBodies(candle5) and
      camdLib.isEngulfingBar(candle5) and  not camdLib.hasShadows(candle5)
 
-// @function Determina si existe la formación del patrón Stick Sandwich.
-// @returns true si existe la formación del patrón.
+//@function Determina si existe la formación del patrón Stick Sandwich.
+//@returns true si existe la formación del patrón.
 export isStickSandwichPattern() =>
     candle1 = 2, candle2 = 1, candle3 = 0
     camdLib.isBearishTrend() and
@@ -231,11 +231,22 @@ export isStickSandwichPattern() =>
      low[candle2] > close[candle1] and
      camdLib.isBlack(close[candle3], open[candle3]) and camdLib.isEngulfingBar(candle3) and camdLib.isCloseNearToPrevClose(candle3, candle1)
 
-// @function Determina si existe la formación del patrón Mínimos comunes o Matching low.
-// @returns true si existe la formación del patrón.
+//@function Determina si existe la formación del patrón Mínimos comunes o Matching low.
+//@returns true si existe la formación del patrón.
 export isMatchingLowPattern() =>
     candle1 = 1, candle2 = 0
     camdLib.isBearishTrend() and
      camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isCloseNearToLow(candle1) and
      isOpenInsidePrevBody(candle2) and camdLib.isCloseNearToPrevClose(candle2, candle1) and camdLib.isBlack(close[candle2], open[candle2])
 
+//@function Determina si existe la formación del patrón Suelo escalonado o Ladder bottom.
+//@returns true si existe la formación del patrón.
+export isLadderBottomPattern() =>
+    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBlack(candle2) and camdLib.isBlack(candle3) and
+     camdLib.hasShortLowerShadow(candle1) and camdLib.hasShortLowerShadow(candle2) and camdLib.hasShortLowerShadow(candle3) and
+     camdLib.isLowerClose(candle2, candle1) and camdLib.isLowerClose(candle3, candle2) and
+     camdLib.isOpenInsidePrevBody(candle2) and camdLib.isOpenInsidePrevBody(candle3) and
+     camdLib.isBlack(candle4) and camdLib.hasUpperShadow(candle4) and camdLib.isCloseBelowPrevLow(candle4, candle3) and camdLib.hasShortLowerShadow(candle4) and
+     camdLib.isWhite(candle5) and camdLib.isCloseAbovePrevHigh(candle5, candle4)
