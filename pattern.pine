@@ -230,3 +230,12 @@ export isStickSandwichPattern() =>
      camdLib.isWhite(close[candle2], open[candle2]) and
      low[candle2] > close[candle1] and
      camdLib.isBlack(close[candle3], open[candle3]) and camdLib.isEngulfingBar(candle3) and camdLib.isCloseNearToPrevClose(candle3, candle1)
+
+// @function Determina si existe la formación del patrón Mínimos comunes o Matching low.
+// @returns true si existe la formación del patrón.
+export isMatchingLowPattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isCloseNearToLow(candle1) and
+     isOpenInsidePrevBody(candle2) and camdLib.isCloseNearToPrevClose(candle2, candle1) and camdLib.isBlack(close[candle2], open[candle2])
+

@@ -4,8 +4,9 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/1
+import cdu4rte/camdPattern/3
 
+// Contadores
 var int bullishBeltHoldLineCounter = 0
 var int bearishBeltHoldLineCounter = 0
 var int homingPigeonCounter = 0
@@ -17,7 +18,9 @@ var int bullishBreakawayCounter = 0
 var int bearishBreakawayCounter = 0
 var int concealingBabySwallowCounter = 0
 var int stickSandwichCounter = 0
+var int matchingLowCounter = 0
 
+// Llamada a los patrones.
 isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
 isAdvanceBlock = camdPattern.isAdvanceBlockPattern()
 isDeliberation = camdPattern.isDeliberationPattern()
@@ -27,8 +30,9 @@ isBullishBreakaway = camdPattern.isBullishBreakawayPattern()
 isBearishBreakaway = camdPattern.isBearishBreakawayPattern()
 isConcealingBabySwallow =  camdPattern.isConcealingBabySwallowPattern()
 isStickSandwich = camdPattern.isStickSandwichPattern()
+isMatchingLow = camdPattern.isMatchingLowPattern()
 
-// Agrego etiqueta del patrón al gráfico.
+// Agrego etiqueta del patrón a las velas.
 if camdPattern.isHammerPattern()
     label.new(x = bar_index, y = low, text = "Martillo", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
 else if camdPattern.isInvertedHammerPattern()
@@ -90,6 +94,9 @@ else if isConcealingBabySwallow
 else if isStickSandwich
     label.new(x = bar_index, y = low, text = "Stick Sandwich", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
     stickSandwichCounter := stickSandwichCounter + 1
+else if isMatchingLow
+    label.new(x = bar_index, y = low, text = "Mínimos comunes", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
+    matchingLowCounter := matchingLowCounter + 1
 
 // Imprimo los contadores de los patrones en la ventana de datos.
 plotchar(bullishBeltHoldLineCounter, "Presa de cinturón alcista", "", location = location.top)
@@ -103,3 +110,4 @@ plotchar(bullishBreakawayCounter, "Escape alcista", "", location = location.top)
 plotchar(bearishBreakawayCounter, "Escape bajista", "", location = location.top)
 plotchar(concealingBabySwallowCounter, "Bebé oculto", "", location = location.top)
 plotchar(stickSandwichCounter, "Stick Sandwich", "", location = location.top)
+plotchar(matchingLowCounter, "Mínimos comunes", "", location = location.top)
