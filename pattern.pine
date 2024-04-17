@@ -5,7 +5,7 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/10
+import cdu4rte/camdLib/13
 
 // Función para verificar el patrón de vela martillo
 export isHammerPattern() =>    
@@ -250,3 +250,27 @@ export isLadderBottomPattern() =>
      camdLib.isOpenInsidePrevBody(candle2) and camdLib.isOpenInsidePrevBody(candle3) and
      camdLib.isBlack(candle4) and camdLib.hasUpperShadow(candle4) and camdLib.isCloseBelowPrevLow(candle4, candle3) and camdLib.hasShortLowerShadow(candle4) and
      camdLib.isWhite(candle5) and camdLib.isCloseAbovePrevHigh(candle5, candle4)
+
+//@function Determina si existe la formación del patrón Línea de avance o thrusting line.
+//@returns true si existe la formación del patrón.
+export isThrustingLinePattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isBlack(candle1) and
+     camdLib.isWhite(candle2) and camdLib.isOpenBelowPrevLow(candle2, candle1) and camdLib.isCloseInsidePrevLowMiddlePart(candle2, candle1)
+
+//@function Determina si existe la formación del patrón Avance in-neck o in-neck pattern.
+//@returns true si existe la formación del patrón.
+export isInNeckPatter() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isBlack(candle1) and
+     camdLib.isWhite(candle2) and camdLib.isOpenBelowPrevLow(candle2, candle1) and camdLib.isCloseNearToLowerBodyPart(candle2, candle1)
+
+//@function Determina si existe la formación del patrón Avance on-neck o on-neck pattern.
+//@returns true si existe la formación del patrón.
+export isOnNeckPatter() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isBlack(candle1) and
+     camdLib.isWhite(candle2) and camdLib.isOpenBelowPrevLow(candle2, candle1) and camdLib.isCloseNearToPrevLow(candle2, candle1)

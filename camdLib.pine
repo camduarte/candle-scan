@@ -288,9 +288,9 @@ export isBullishTrend() =>
 export isBearishTrend() =>
     ta.mom(close, MOMENTUM_LENGTH) < 0
 
-// Determina si el precio de cierre es cercano al precio mínimo.
-// index El índice de la vela de referencia.
-// return true si el precio de cierre está cerca al precio mínimo.
+// @function Determina si el precio de cierre es cercano al precio mínimo.
+// @param index El índice de la vela de referencia.
+// @returns true si el precio de cierre está cerca al precio mínimo.
 export isCloseNearToLow(int index) =>
     close[index] <= low[index] + (high[index] - low[index]) * 0.05
 
@@ -341,3 +341,39 @@ export isCloseBelowPrevLow(int idx1, int idx2) =>
 //@returns true si la vela tiene el trasero afeitado o es Shaven Bottom.
 export hasShavenBottom(int index) =>
     low[index] == math.min(open[index], close[index])
+
+//@function Determina si el precio de apertura está por debajo del mínimo anterior indicado.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de apertura está por debajo del mínimo anterior indicado.
+export isOpenBelowPrevLow(int idx1, int idx2) =>
+    open[idx1] < low[idx2]
+
+//@function Obtiene el precio medio del cuerpo real de la vela.
+//@param index El índice de la vela.
+//@return El precio medio del cuerpo real de la vela.
+export getBodyMiddlePrice(int index) =>
+    math.max(open[index], close[index]) - getBodySize(index) / 2
+
+//@function Determina si el precio de cierre se encuentra entre la parte baja del cuerpo real precedente y el precio medio de dicho cuerpo real.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de cierre se sitúa entre la parte baja del cuerpo real precedente y el precio medio de dicho cuerpo real.
+export isCloseInsidePrevLowMiddlePart(int idx1, int idx2) =>
+    close[idx1] < getBodyMiddlePrice(idx2) and close[idx1] > math.min(open[idx2], close[idx2])
+
+//@function Determina si el precio de cierre se encuentra cerca de la parte baja del cuerpo real precedente.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de cierre se encuentra cerca de la parte baja del cuerpo real precedente.
+export isCloseNearToLowerBodyPart(int idx1, int idx2) =>
+    close[idx1] < math.min(open[idx2], close[idx2]) + getBodySize(idx2) * 0.025 and
+     close[idx1] > math.min(open[idx2], close[idx2]) - getBodySize(idx2) * 0.025
+
+//@function Determina si el precio de cierre es cercano al precio mínimo de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de cierre se encuentra cerca del precio mínimo de la vela anterior.
+export isCloseNearToPrevLow(int idx1, int idx2) =>
+    close[idx1] < low[idx2] + getRange(idx2) * 0.025 and
+     close[idx1] > low[idx2] - getRange(idx2) * 0.025

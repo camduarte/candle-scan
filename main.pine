@@ -4,7 +4,7 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/4
+import cdu4rte/camdPattern/8
 
 // Contadores
 var int bullishBeltHoldLineCounter = 0
@@ -20,6 +20,9 @@ var int concealingBabySwallowCounter = 0
 var int stickSandwichCounter = 0
 var int matchingLowCounter = 0
 var int ladderBottomCounter = 0
+var int thrustingLineCounter = 0
+var int inNeckCounter = 0
+var int onNeckCounter = 0
 
 // Llamada a los patrones.
 isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
@@ -33,6 +36,9 @@ isConcealingBabySwallow =  camdPattern.isConcealingBabySwallowPattern()
 isStickSandwich = camdPattern.isStickSandwichPattern()
 isMatchingLow = camdPattern.isMatchingLowPattern()
 isLadderBottom = camdPattern.isLadderBottomPattern()
+isThrustingLine = camdPattern.isThrustingLinePattern()
+isInNeck = camdPattern.isInNeckPatter()
+isOnNeck = camdPattern.isOnNeckPatter()
 
 // Agrego etiqueta del patrón a las velas.
 if camdPattern.isHammerPattern()
@@ -102,6 +108,15 @@ else if isMatchingLow
 else if isLadderBottom
     label.new(x = bar_index, y = low, text = "Suelo escalonado", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
     ladderBottomCounter := ladderBottomCounter + 1
+else if isThrustingLine
+    label.new(x = bar_index, y = low, text = "Línea de avance", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
+    thrustingLineCounter := thrustingLineCounter + 1
+else if isInNeck
+    label.new(x = bar_index, y = low, text = "Avance in-neck", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
+    inNeckCounter := inNeckCounter + 1
+else if isOnNeck
+    label.new(x = bar_index, y = low, text = "Avance on-neck", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
+    onNeckCounter := onNeckCounter + 1
 
 // Imprimo los contadores de los patrones en la ventana de datos.
 plotchar(bullishBeltHoldLineCounter, "Presa de cinturón alcista", "", location = location.top)
@@ -117,3 +132,6 @@ plotchar(concealingBabySwallowCounter, "Bebé oculto", "", location = location.t
 plotchar(stickSandwichCounter, "Stick Sandwich", "", location = location.top)
 plotchar(matchingLowCounter, "Mínimos comunes", "", location = location.top)
 plotchar(ladderBottomCounter, "Suelo escalonado", "", location = location.top)
+plotchar(thrustingLineCounter, "Línea de avance", "", location = location.top)
+plotchar(inNeckCounter, "Avance in-neck", "", location = location.top)
+plotchar(onNeckCounter, "Avance on-neck", "", location = location.top)
