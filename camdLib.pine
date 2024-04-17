@@ -377,3 +377,11 @@ export isCloseNearToLowerBodyPart(int idx1, int idx2) =>
 export isCloseNearToPrevLow(int idx1, int idx2) =>
     close[idx1] < low[idx2] + getRange(idx2) * 0.025 and
      close[idx1] > low[idx2] - getRange(idx2) * 0.025
+
+//@function Determina si el precio de apertura es próximo al precio de apertura de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de apertura es próximo al precio de apertura de la vela anterior.
+export isOpeningCloseToPrevOpening(int idx1, int idx2) =>
+    open[idx1] < open[idx2] + getBodySize(idx2) * 0.025 and
+     open[idx1] > open[idx2] - getBodySize(idx2) * 0.025

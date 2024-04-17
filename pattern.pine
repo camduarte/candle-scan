@@ -5,7 +5,7 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/13
+import cdu4rte/camdLib/14
 
 // Función para verificar el patrón de vela martillo
 export isHammerPattern() =>    
@@ -274,3 +274,21 @@ export isOnNeckPatter() =>
     camdLib.isBearishTrend() and
      camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isBlack(candle1) and
      camdLib.isWhite(candle2) and camdLib.isOpenBelowPrevLow(candle2, candle1) and camdLib.isCloseNearToPrevLow(candle2, candle1)
+
+//@function Determina si existe la formación del patrón Líneas de separación alcistas o bullish separating lines.
+//@returns true si existe la formación del patrón.
+export isBullishSeparatingLinesPattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isWhite(candle2) and camdLib.isBigBody(candle2, camdLib.getSessionsLength()) and
+     camdLib.isOpeningCloseToPrevOpening(candle2, candle1)
+
+//@function Determina si existe la formación del patrón Líneas de separación bajistas o bearish separating lines.
+//@returns true si existe la formación del patrón.
+export isBearishSeparatingLinesPattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isBlack(candle2) and camdLib.isBigBody(candle2, camdLib.getSessionsLength()) and
+     camdLib.isOpeningCloseToPrevOpening(candle2, candle1)

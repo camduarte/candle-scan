@@ -4,7 +4,7 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/8
+import cdu4rte/camdPattern/10
 
 // Contadores
 var int bullishBeltHoldLineCounter = 0
@@ -23,6 +23,8 @@ var int ladderBottomCounter = 0
 var int thrustingLineCounter = 0
 var int inNeckCounter = 0
 var int onNeckCounter = 0
+var int bullishSeparatingLinesCounter = 0
+var int bearishSeparatingLinesCounter = 0
 
 // Llamada a los patrones.
 isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
@@ -39,6 +41,8 @@ isLadderBottom = camdPattern.isLadderBottomPattern()
 isThrustingLine = camdPattern.isThrustingLinePattern()
 isInNeck = camdPattern.isInNeckPatter()
 isOnNeck = camdPattern.isOnNeckPatter()
+isBullishSeparatingLines = camdPattern.isBullishSeparatingLinesPattern()
+isBearishSeparatingLines = camdPattern.isBearishSeparatingLinesPattern()
 
 // Agrego etiqueta del patrón a las velas.
 if camdPattern.isHammerPattern()
@@ -117,6 +121,12 @@ else if isInNeck
 else if isOnNeck
     label.new(x = bar_index, y = low, text = "Avance on-neck", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
     onNeckCounter := onNeckCounter + 1
+else if isBullishSeparatingLines
+    label.new(x = bar_index, y = low, text = "Líneas de separación alcistas", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
+    bullishSeparatingLinesCounter := bullishSeparatingLinesCounter + 1
+else if isBearishSeparatingLines
+    label.new(x = bar_index, y = low, text = "Líneas de separación bajistas", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
+    bearishSeparatingLinesCounter := bearishSeparatingLinesCounter + 1
 
 // Imprimo los contadores de los patrones en la ventana de datos.
 plotchar(bullishBeltHoldLineCounter, "Presa de cinturón alcista", "", location = location.top)
@@ -135,3 +145,5 @@ plotchar(ladderBottomCounter, "Suelo escalonado", "", location = location.top)
 plotchar(thrustingLineCounter, "Línea de avance", "", location = location.top)
 plotchar(inNeckCounter, "Avance in-neck", "", location = location.top)
 plotchar(onNeckCounter, "Avance on-neck", "", location = location.top)
+plotchar(bullishSeparatingLinesCounter, "Líneas de separación alcistas", "", location = location.top)
+plotchar(bearishSeparatingLinesCounter, "Líneas de separación bajistas", "", location = location.top)
