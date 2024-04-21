@@ -4,7 +4,7 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/31
+import cdu4rte/camdPattern/35
 
 // Contadores
 var int hammerCounter = 0
@@ -57,6 +57,10 @@ var int upsideGapTwoCrowsCounter  = 0
 var int twoCrowsCounter = 0
 var int upsideTasukiGapCounter = 0
 var int downsideTasukiGapCounter = 0
+var int upsideGapThreeMethodsCounter = 0
+var int downsideGapThreeMethodsCounter = 0
+var int upsideGappingSideBySideWhiteLinesCounter = 0
+var int downsideGappingSideBySideWhiteLinesCounter = 0
 
 const string PATTERN_THREE_IDENTICAL_BLACK_CROWS = "Tres cuervos negros idénticos"
 const string PATTERN_ADVANCE_BLOCK = "Parada previa"
@@ -108,6 +112,10 @@ const string PATTERN_UPSIDE_GAP_TWO_CROWS = "Dos cuervos en hueco alcista"
 const string PATTERN_TWO_CROWS = "Dos cuervos"
 const string PATTERN_UPSIDE_TASUKI_GAP = "Hueco alcista Tasuki"
 const string PATTERN_DOWNSIDE_TASUKI_GAP = "Hueco bajista Tasuki"
+const string PATTER_UPSIDE_GAP_METHODS = "Hueco alcista en método de tres"
+const string PATTERN_DOWNSIDE_GAP_THREE_METHODS = "Hueco bajista en método de tres"
+const string PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco alcista con velas blancas alineadas"
+const string PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco bajista con velas blancas alineadas"
 
 const color COLOR_GREEN = color.rgb(189, 236, 182)
 const color COLOR_RED = color.rgb(242,186,201,0)
@@ -164,6 +172,10 @@ isUpsideGapTwoCrows = camdPattern.isUpsideGapTwoCrowsPattern()
 isTwoCrows = camdPattern.isTwoCrowsPattern()
 isUpsideTasukiGap = camdPattern.isUpsideTasukiGapPattern()
 isDownsideTasukiGap = camdPattern.isDownsideTasukiGapPattern()
+isUpsideGapThreeMethods = camdPattern.isUpsideGapThreeMethodsPattern()
+isDownsideGapThreeMethods = camdPattern.isDownsideGapThreeMethodsPattern()
+isUpsideGappingSideBySideWhiteLines = camdPattern.isUpsideGappingSideBySideWhiteLinesPattern()
+isDownsideGappingSideBySideWhiteLines = camdPattern.isDownsideGappingSideBySideWhiteLinesPattern()
 
 //@function Inserta una etiqueta en el gráfico.
 //@param txt El texto de la etiqueta.
@@ -328,6 +340,19 @@ if isUpsideTasukiGap
 if isDownsideTasukiGap
     insertLabel(PATTERN_DOWNSIDE_TASUKI_GAP, COLOR_RED)
     downsideTasukiGapCounter := incrementCounter(downsideTasukiGapCounter)
+if isUpsideGapThreeMethods
+    insertLabel(PATTER_UPSIDE_GAP_METHODS, COLOR_GREEN)
+    upsideGapThreeMethodsCounter := incrementCounter(upsideGapThreeMethodsCounter)
+if isDownsideGapThreeMethods
+    insertLabel(PATTERN_DOWNSIDE_GAP_THREE_METHODS, COLOR_RED)
+    downsideGapThreeMethodsCounter := incrementCounter(downsideGapThreeMethodsCounter)
+if isUpsideGappingSideBySideWhiteLines
+    insertLabel(PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, COLOR_GREEN)
+    upsideGappingSideBySideWhiteLinesCounter := incrementCounter(upsideGappingSideBySideWhiteLinesCounter)
+if isDownsideGappingSideBySideWhiteLines
+    insertLabel(PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, COLOR_RED)
+    downsideGappingSideBySideWhiteLinesCounter := incrementCounter(downsideGappingSideBySideWhiteLinesCounter)
+
 
 // Imprimo los contadores de los patrones en la ventana de datos.
 plotchar(hammerCounter, PATTERN_HAMMER, "", location = location.top)
@@ -370,6 +395,10 @@ plotchar(upsideGapTwoCrowsCounter, PATTERN_UPSIDE_GAP_TWO_CROWS, "", location = 
 plotchar(twoCrowsCounter, PATTERN_TWO_CROWS, "", location = location.top)
 plotchar(upsideTasukiGapCounter, PATTERN_UPSIDE_TASUKI_GAP, "", location = location.top)
 plotchar(downsideTasukiGapCounter, PATTERN_DOWNSIDE_TASUKI_GAP, "", location = location.top)
+plotchar(upsideGapThreeMethodsCounter, PATTER_UPSIDE_GAP_METHODS, "", location = location.top)
+plotchar(downsideGapThreeMethodsCounter, PATTERN_DOWNSIDE_GAP_THREE_METHODS, "", location = location.top)
+plotchar(upsideGappingSideBySideWhiteLinesCounter, PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, "", location = location.top)
+plotchar(downsideGappingSideBySideWhiteLinesCounter, PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, "", location = location.top)
 
 // Resalta la vela en el gráfico.
 // bgcolor(isHammer ? COLOR_BLUE : na)
@@ -422,3 +451,7 @@ plotchar(downsideTasukiGapCounter, PATTERN_DOWNSIDE_TASUKI_GAP, "", location = l
 // bgcolor(isTwoCrows ? COLOR_BLUE : na)
 // bgcolor(isUpsideTasukiGap ? COLOR_BLUE : na)
 // bgcolor(isDownsideTasukiGap ? COLOR_BLUE : na)
+// bgcolor(isUpsideGapThreeMethods ? COLOR_BLUE : na)
+// bgcolor(isDownsideGapThreeMethods ? COLOR_BLUE : na)
+// bgcolor(isUpsideGappingSideBySideWhiteLines ? COLOR_BLUE : na)
+// bgcolor(isDownsideGappingSideBySideWhiteLines ? COLOR_BLUE : na)

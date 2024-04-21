@@ -77,6 +77,12 @@ export isBlack(float c, float o) =>
 export isBlack(int index) =>
     close[index] < open[index]
 
+// @function Calcula el rango de la vela.
+// @param idx1 El índice de la vela.
+// @returns El rango de la vela.
+export getRange(int index) =>
+    math.abs(high[index] - low[index])
+
 //@function Determina si el cierre de la vela está por encima del cierre anterior.
 //@param c El precio de cierre de la vela.
 //@param c_prev El precio de cierre de la vela anterior.
@@ -320,9 +326,14 @@ export hasShortLowerShadow(int index) =>
 //@param idx2 El índice de la vela anterior.
 //@returns true si el precio de cierre está cercano al precio de cierre de la vela anterior.
 export isCloseNearToPrevClose(int idx1, int idx2) =>
-    candleRange = math.abs(close[idx2] - open[idx2])
-    tolerance = candleRange * 0.05
-    close[idx1] < close[idx2] + tolerance and close[idx1] > close[idx2] - tolerance
+    close[idx1] < close[idx2] + getRange(idx2) * 0.05 and close[idx1] > close[idx2] - getRange(idx2) * 0.05
+
+//@function Determina si el precio de apertura está cerca del precio de apertura de la vela anterior.
+//@param idx1 El índice de la vela de referencia.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el precio de apertura está cerca del precio de apertura de la vela anterior.
+export isOpenNearToPrevOpen(int idx1, int idx2) =>
+    open[idx1] < open[idx2] + getRange(idx2) * 0.05 and open[idx1] > open[idx2] - getRange(idx2) * 0.05
 
 //@function Determina si la apertura de la vela se encuentra dentro del cuerpo real de la vela anterior.
 //@param index El índice de la vela.
@@ -346,12 +357,6 @@ export isOpenInsidePrevBody(int idx1, int idx2) =>
 export isCloseInsidePrevBody(int idx1, int idx2) =>
     close[idx1] >= math.min(open[idx2], close[idx2]) and
      close[idx1] <= math.max(open[idx2], close[idx2])
-
-// @function Calcula el rango de la vela.
-// @param idx1 El índice de la vela.
-// @returns El rango de la vela.
-export getRange(int index) =>
-    math.abs(high[index] - low[index])
 
 //@function Determina si el precio de cierre está por encima del máximo anterior indicado.
 //@param idx1 El índice de la vela.
@@ -501,3 +506,10 @@ export isUpperShadowBelowPrevLowerShadow(int idx1, int idx2) =>
 export isCloseAbovePrevOpen(int idx1, int idx2) =>
     close[idx1] > open[idx2] 
 
+//@function Determina si el tamaño del cuerpo real de la vela es similar al tamaño del cuerpo real de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si el tamaño del cuerpo real de la vela es similar al tamaño del cuerpo real de la vela anterior.
+export isBodySizeSimilarToPrevBody(int idx1, int idx2) =>
+    getBodySize(idx1) > getBodySize(idx2) - getBodySize(idx2) * 0.1 and
+     getBodySize(idx1) < getBodySize(idx2) + getBodySize(idx2) * 0.1

@@ -5,7 +5,7 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/35
+import cdu4rte/camdLib/37
 
 // Función para verificar el patrón de vela martillo.
 export isHammerPattern() =>    
@@ -478,3 +478,42 @@ export isDownsideTasukiGapPattern() =>
      camdLib.isBlack(candle2) and camdLib.isSmallerRange(candle2, candle1) and camdLib.isBearishGapRelativeToShadows(candle2, candle1) and
      camdLib.isWhite(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseAbovePrevOpen(candle3, candle2) and
      camdLib.isUpperShadowBelowPrevLowerShadow(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Hueco alcista en método de tres o upside gap three methods..
+//@returns true si existe la formación del patrón.
+export isUpsideGapThreeMethodsPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isWhite(candle2) and camdLib.isSmallerRange(candle2, candle1) and
+     camdLib.isBullishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isBlack(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseInsidePrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Hueco bajista en método de tres o downside gap three methods.
+//@returns true si existe la formación del patrón.
+export isDownsideGapThreeMethodsPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and
+     camdLib.isBlack(candle2) and camdLib.isSmallerRange(candle2, candle1) and camdLib.isBearishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isWhite(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseInsidePrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Hueco alcista con velas blancas alineadas o upside gapping side by side white lines.
+//@returns true si existe la formación del patrón.
+export isUpsideGappingSideBySideWhiteLinesPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isWhite(candle2) and camdLib.isWhite(candle3) and
+     camdLib.isSmallerRange(candle2, candle1) and camdLib.isSmallerRange(candle3, candle1) and
+     camdLib.isBullishGapRelativeToShadows(candle2, candle1) and camdLib.isBullishGapRelativeToShadows(candle3, candle1) and
+     camdLib.isOpenNearToPrevOpen(candle3, candle2) and camdLib.isCloseNearToPrevClose(candle3, candle2)
+
+//@function Determina si existe la formación del patrón Hueco bajista con velas blancas alineadas o downside gapping side by side white lines.
+//@returns true si existe la formación del patrón.
+export isDownsideGappingSideBySideWhiteLinesPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isWhite(candle2) and camdLib.isWhite(candle3) and
+     camdLib.isSmallerRange(candle2, candle1) and camdLib.isSmallerRange(candle3, candle1) and
+     camdLib.isBearishGapRelativeToShadows(candle2, candle1) and camdLib.isBearishGapRelativeToShadows(candle3, candle1) and
+     camdLib.isOpenNearToPrevOpen(candle3, candle2) and camdLib.isCloseNearToPrevClose(candle3, candle2)
+
