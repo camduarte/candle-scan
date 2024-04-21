@@ -472,3 +472,32 @@ export isOpenBelowPrevClose(int idx1, int idx2) =>
 //@returns true Determina si el rango de la vela es mayor al rango de la vela anterior.
 export isBiggerRange(int idx1, int idx2) =>
     getRange(idx1) > getRange(idx2)
+
+//@function Determina si el rango de la vela es menor al rango de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true Determina si el rango de la vela es menor al rango de la vela anterior.
+export isSmallerRange(int idx1, int idx2) =>
+    getRange(idx1) < getRange(idx2)
+
+//@function Determina si la sombra inferior de la vela acaba por encima de la sombra superior de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si la sombra inferior de la vela acaba por encima de la sombra superior de la vela anterior.
+export isLowerShadowAbovePrevUpperShadow(int idx1, int idx2) =>
+    low[idx1] > high[idx2]
+
+//@function Determina si la sombra superior de la vela acaba por debajo de la sombra inferior de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si la sombra superior de la vela acaba por debajo de la sombra inferior de la vela anterior.
+export isUpperShadowBelowPrevLowerShadow(int idx1, int idx2) =>
+    high[idx1] < low[idx2] 
+
+//@function Determina si la vela cierra por encima del precio de apertura de la vela anterior.
+//@param idx1 El índice de la vela.
+//@param idx2 El índice de la vela anterior.
+//@returns true si la vela cierra por encima del precio de apertura de la vela anterior.
+export isCloseAbovePrevOpen(int idx1, int idx2) =>
+    close[idx1] > open[idx2] 
+

@@ -4,7 +4,7 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/30
+import cdu4rte/camdPattern/31
 
 // Contadores
 var int hammerCounter = 0
@@ -55,6 +55,8 @@ var int bullishTriStarCounter = 0
 var int bearishTriStarCounter = 0
 var int upsideGapTwoCrowsCounter  = 0
 var int twoCrowsCounter = 0
+var int upsideTasukiGapCounter = 0
+var int downsideTasukiGapCounter = 0
 
 const string PATTERN_THREE_IDENTICAL_BLACK_CROWS = "Tres cuervos negros idénticos"
 const string PATTERN_ADVANCE_BLOCK = "Parada previa"
@@ -104,6 +106,8 @@ const string PATTERN_BULLISH_TRI_STAR = "Triple estrella alcista"
 const string PATTERN_BEARISH_TRI_STAR = "Triple estrella bajista"
 const string PATTERN_UPSIDE_GAP_TWO_CROWS = "Dos cuervos en hueco alcista"
 const string PATTERN_TWO_CROWS = "Dos cuervos"
+const string PATTERN_UPSIDE_TASUKI_GAP = "Hueco alcista Tasuki"
+const string PATTERN_DOWNSIDE_TASUKI_GAP = "Hueco bajista Tasuki"
 
 const color COLOR_GREEN = color.rgb(189, 236, 182)
 const color COLOR_RED = color.rgb(242,186,201,0)
@@ -158,6 +162,8 @@ isBullishTriStar = camdPattern.isBullishTriStarPattern()
 isBearishTriStar = camdPattern.isBearishTriStarPattern()
 isUpsideGapTwoCrows = camdPattern.isUpsideGapTwoCrowsPattern()
 isTwoCrows = camdPattern.isTwoCrowsPattern()
+isUpsideTasukiGap = camdPattern.isUpsideTasukiGapPattern()
+isDownsideTasukiGap = camdPattern.isDownsideTasukiGapPattern()
 
 //@function Inserta una etiqueta en el gráfico.
 //@param txt El texto de la etiqueta.
@@ -316,6 +322,12 @@ if isUpsideGapTwoCrows
 if isTwoCrows
     insertLabel(PATTERN_TWO_CROWS, COLOR_RED)
     twoCrowsCounter := incrementCounter(twoCrowsCounter)
+if isUpsideTasukiGap
+    insertLabel(PATTERN_UPSIDE_TASUKI_GAP, COLOR_GREEN)
+    upsideTasukiGapCounter := incrementCounter(upsideTasukiGapCounter)
+if isDownsideTasukiGap
+    insertLabel(PATTERN_DOWNSIDE_TASUKI_GAP, COLOR_RED)
+    downsideTasukiGapCounter := incrementCounter(downsideTasukiGapCounter)
 
 // Imprimo los contadores de los patrones en la ventana de datos.
 plotchar(hammerCounter, PATTERN_HAMMER, "", location = location.top)
@@ -356,6 +368,8 @@ plotchar(bullishTriStarCounter, PATTERN_BULLISH_TRI_STAR, "", location = locatio
 plotchar(bearishTriStarCounter, PATTERN_BEARISH_TRI_STAR, "", location = location.top)
 plotchar(upsideGapTwoCrowsCounter, PATTERN_UPSIDE_GAP_TWO_CROWS, "", location = location.top)
 plotchar(twoCrowsCounter, PATTERN_TWO_CROWS, "", location = location.top)
+plotchar(upsideTasukiGapCounter, PATTERN_UPSIDE_TASUKI_GAP, "", location = location.top)
+plotchar(downsideTasukiGapCounter, PATTERN_DOWNSIDE_TASUKI_GAP, "", location = location.top)
 
 // Resalta la vela en el gráfico.
 // bgcolor(isHammer ? COLOR_BLUE : na)
@@ -406,3 +420,5 @@ plotchar(twoCrowsCounter, PATTERN_TWO_CROWS, "", location = location.top)
 // bgcolor(isBearishTriStar ? COLOR_BLUE : na)
 // bgcolor(isUpsideGapTwoCrows ? COLOR_BLUE : na)
 // bgcolor(isTwoCrows ? COLOR_BLUE : na)
+// bgcolor(isUpsideTasukiGap ? COLOR_BLUE : na)
+// bgcolor(isDownsideTasukiGap ? COLOR_BLUE : na)

@@ -5,7 +5,7 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/32
+import cdu4rte/camdLib/35
 
 // Función para verificar el patrón de vela martillo.
 export isHammerPattern() =>    
@@ -458,3 +458,23 @@ export isTwoCrowsPattern() =>
      camdLib.isWhite(candle1) and
      camdLib.isBlack(candle2) and not camdLib.isBiggerRange(candle2, candle1) and camdLib.isBullishGapRelativeToBodies(candle2, candle1) and
      camdLib.isBlack(candle3) and camdLib.isOpenInsidePrevBody(candle3) and camdLib.isCloseInsidePrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Hueco alcista Tasuki o upside Tasuki gap.
+//@returns true si existe la formación del patrón.
+export isUpsideTasukiGapPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and 
+     camdLib.isWhite(candle2) and camdLib.isSmallerRange(candle2, candle1) and camdLib.isBullishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isBlack(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseBelowPrevOpen(candle3, candle2) and
+     camdLib.isLowerShadowAbovePrevUpperShadow(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Hueco bajista Tasuki o downside Tasuki gap.
+//@returns true si existe la formación del patrón.
+export isDownsideTasukiGapPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and 
+     camdLib.isBlack(candle2) and camdLib.isSmallerRange(candle2, candle1) and camdLib.isBearishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isWhite(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseAbovePrevOpen(candle3, candle2) and
+     camdLib.isUpperShadowBelowPrevLowerShadow(candle3, candle1)
