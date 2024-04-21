@@ -5,16 +5,16 @@
 // @description Herramientas para detectar patrones en velas japonesas.
 library (title = "camdPattern")
 
-import cdu4rte/camdLib/14
+import cdu4rte/camdLib/32
 
-// Función para verificar el patrón de vela martillo
+// Función para verificar el patrón de vela martillo.
 export isHammerPattern() =>    
     camdLib.isBearishTrend() and
      close != open and
      camdLib.getLowerShadow() >= 2 * camdLib.getBodySize() and  
      camdLib.getUpperShadow() < 0.25 * camdLib.getBodySize()
 
-// Función para verificar el patrón de vela martillo
+// Función para verificar el patrón de vela martillo.
 // index El índice de la vela.
 export isHammerPattern(int index) => 
     camdLib.isBearishTrend() and
@@ -51,7 +51,7 @@ export isBullishBeltHoldLinePattern() =>
      camdLib.getBodySize() >= camdLib.getAverageCandleSize(0, 20) * 2
 
 // Presa de cinturón bajista o bearish belt-hold line.
-export isBearishBelthHoldLinePattern() =>
+export isBearishBeltHoldLinePattern() =>
     camdLib.isBullishTrend() and
      close < open and open == high and
      camdLib.getLowerShadow() < camdLib.getBodySize() * 0.25 and
@@ -69,13 +69,13 @@ export isBearishEngulfingPattern() =>
      close < open and close[1] > open[1] and
       close < open[1] and open > close[1]
 
-// Función para verificar el patrón de vela Harami alcista
+// Función para verificar el patrón de vela Harami alcista.
 export isBullishHaramiPattern() => 
     camdLib.isBearishTrend() and 
      close > open and close[1] < open[1] and
      close < open[1] and open > close[1]
 
-// Función para verificar el patrón de vela Harami bajista
+// Función para verificar el patrón de vela Harami bajista.
 export isBearishHaramiPattern() => 
     camdLib.isBullishTrend() and
      close < open and close[1] > open[1] and
@@ -142,13 +142,6 @@ export isThreeIdenticalBlackCrowsPattern()  =>
      camdLib.calculatePriceDifference(close[2], open[1]) < open[1] * 0.0025 and
      camdLib.calculatePriceDifference(close[1], open) < open * 0.0025
 
-// Verifica si la apertura de la vela indicada está dentro del cuerpo de la vela anterior.
-export isOpenInsidePrevBody(int position) =>
-    if camdLib.isWhite(close[position + 1], open[position + 1])
-        open[position] < close[position + 1] and open[position] > open[position + 1] 
-    else
-        open[position] < open[position + 1] and open[position] > close[position + 1]
-
 //Parada previa o advance block.
 export isAdvanceBlockPattern() =>
     camdLib.isBullishTrend() and
@@ -187,7 +180,7 @@ export isBullishBreakawayPattern() =>
     candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
     camdLib.isBearishTrend() and
      camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, 5) and
-     camdLib.isBlack(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, 5) and camdLib.isBearishGapRelativeToTheShadows(candle2, candle1) and
+     camdLib.isBlack(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, 5) and camdLib.isBearishGapRelativeToShadows(candle2, candle1) and
      open[candle3] < low[candle2] and open[candle4] < low[candle2]and 
      not camdLib.isHigherClose(close[candle3], close[candle2]) and not camdLib.isHigherClose(close[candle4], close[candle4]) and
      camdLib.isBlack(close[candle3], open[candle3]) and camdLib.isBlack(close[candle4], open[candle4]) and
@@ -199,7 +192,7 @@ export isBearishBreakawayPattern() =>
     candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
     camdLib.isBullishTrend() and
      camdLib.isWhite(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
-     camdLib.isWhite(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isBullishGapRelativeToTheShadows(candle2, candle1) and
+     camdLib.isWhite(close[candle2], open[candle2]) and camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isBullishGapRelativeToShadows(candle2, candle1) and
      open[candle3] > low[candle2] and open[candle4] > low[candle2] and
      camdLib.isHigherClose(close[candle3], close[candle2]) and camdLib.isHigherClose(close[candle4], close[candle3]) and
      camdLib.isWhite(close[candle3], open[candle3]) and camdLib.isWhite(close[candle4], open[candle4]) and
@@ -237,7 +230,7 @@ export isMatchingLowPattern() =>
     candle1 = 1, candle2 = 0
     camdLib.isBearishTrend() and
      camdLib.isBlack(close[candle1], open[candle1]) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and camdLib.isCloseNearToLow(candle1) and
-     isOpenInsidePrevBody(candle2) and camdLib.isCloseNearToPrevClose(candle2, candle1) and camdLib.isBlack(close[candle2], open[candle2])
+     camdLib.isOpenInsidePrevBody(candle2) and camdLib.isCloseNearToPrevClose(candle2, candle1) and camdLib.isBlack(close[candle2], open[candle2])
 
 //@function Determina si existe la formación del patrón Suelo escalonado o Ladder bottom.
 //@returns true si existe la formación del patrón.
@@ -292,3 +285,176 @@ export isBearishSeparatingLinesPattern() =>
      camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
      camdLib.isBlack(candle2) and camdLib.isBigBody(candle2, camdLib.getSessionsLength()) and
      camdLib.isOpeningCloseToPrevOpening(candle2, candle1)
+
+//@function Determina si existe la formación del patrón Método de tres al alza o rising three methods.
+//@returns true si existe la formación del patrón.
+export isRisingThreeMethodsPattern() =>
+    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
+    camdLib.isBullishTrend() and 
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isBlack(candle2) and camdLib.isBlack(candle3) and camdLib.isBlack(candle4) and
+     camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle3, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle4, camdLib.getSessionsLength()) and
+     camdLib.isLowerLow(candle3) and camdLib.isLowerLow(candle4) and
+     camdLib.isLowerClose(candle3, candle2) and camdLib.isLowerClose(candle4, candle3) and
+     camdLib.isBodyInsidePrevBody(candle2, candle1) and camdLib.isBodyInsidePrevBody(candle3, candle1) and camdLib.isBodyInsidePrevBody(candle4, candle1) and
+     camdLib.isWhite(candle5) and camdLib.isBigBody(candle5, camdLib.getSessionsLength()) and camdLib.isHigherClose(candle5, candle1)
+
+//@function Determina si existe la formación del patrón Método de tres a la baja o falling three methods.
+//@returns true si existe la formación del patrón.
+export isFallingThreeMethodsPattern() =>
+    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
+    camdLib.isBearishTrend() and 
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isWhite(candle2) and camdLib.isWhite(candle3) and camdLib.isWhite(candle4) and
+     camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle3, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle4, camdLib.getSessionsLength()) and
+     camdLib.isHigherHigh(candle3, candle2) and camdLib.isHigherHigh(candle4, candle3) and
+     camdLib.isHigherClose(candle3, candle2) and camdLib.isHigherClose(candle4, candle3) and
+     camdLib.isBodyInsidePrevBody(candle2, candle1) and camdLib.isBodyInsidePrevBody(candle3, candle1) and camdLib.isBodyInsidePrevBody(candle4, candle1) and
+     camdLib.isBlack(candle5) and camdLib.isBigBody(candle5, camdLib.getSessionsLength()) and camdLib.isLowerClose(candle5, candle1)
+
+//@function Determina si existe la formación del patrón Presa de suelo alcista o Mat-hold bullish.
+//@returns true si existe la formación del patrón.
+export isMatHoldBullishPattern() =>
+    candle1 = 4, candle2 = 3, candle3 = 2, candle4 = 1, candle5 = 0
+    camdLib.isBullishTrend() and 
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isBlack(candle2) and camdLib.isBlack(candle3) and camdLib.isBlack(candle4) and
+     camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle3, camdLib.getSessionsLength()) and camdLib.isSmallBody(candle4, camdLib.getSessionsLength()) and
+     camdLib.isLowerLow(candle3) and camdLib.isLowerLow(candle4) and
+     camdLib.isLowerClose(candle3, candle2) and camdLib.isLowerClose(candle4, candle3) and
+     camdLib.isBullishGapRelativeToBodies(candle2) and
+     camdLib.isBodyInsidePrevBody(candle2, candle1) and camdLib.isBodyInsidePrevBody(candle3, candle1) and camdLib.isBodyInsidePrevBody(candle4, candle1) and
+     camdLib.isWhite(candle5) and camdLib.isBigBody(candle5, camdLib.getSessionsLength()) and camdLib.isCloseHigherPrevOpen(candle5, candle2)
+
+//@function Determina si existe la formación del patrón Triple strike alcista o bullish three line strike.
+//@returns true si existe la formación del patrón.
+export isBullishThreeLineStrikePattern() =>
+    candle1 = 3, candle2 = 2, candle3 = 1, candle4 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isWhite(candle2) and camdLib.isWhite(candle3) and
+     camdLib.isHigherClose(candle2, candle1) and camdLib.isHigherClose(candle3, candle2) and
+     camdLib.isOpenInsidePrevBody(candle2) and camdLib.isOpenInsidePrevBody(candle3) and
+     camdLib.isBlack(candle4) and camdLib.isOpenHigherPrevClose(candle4, candle3) and camdLib.isCloseBelowPrevOpen(candle4, candle1)
+
+//@function Determina si existe la formación del patrón Triple strike bajista o bearish three line strike.
+//@returns true si existe la formación del patrón.
+export isBearishThreeLineStrikePattern() =>
+    candle1 = 3, candle2 = 2, candle3 = 1, candle4 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBlack(candle2) and camdLib.isBlack(candle3) and
+     camdLib.isLowerClose(candle2, candle1) and camdLib.isLowerClose(candle3, candle2) and
+     camdLib.isOpenInsidePrevBody(candle2) and camdLib.isOpenInsidePrevBody(candle3) and
+     camdLib.isWhite(candle4) and camdLib.isCloseHigherPrevOpen(candle4, candle1) and camdLib.isOpenBelowPrevClose(candle4, candle3)
+
+//@function Determina si existe la formación del patrón Estrella Doji o Doji star.
+//@returns true si existe la formación del patrón.
+isDojiStarPattern(int index) =>
+    //threshold_percent = input.float(0.1, title="Umbral de porcentaje (%)")
+    threshold_percent = 0.1    
+    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getUpperShadow(index) > camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getLowerShadow(index) > camdLib.getRange(index) * threshold_percent / 100
+
+//@function Determina si existe la formación del patrón Estrella Doji alcista o bullish Doji star.
+//@returns true si existe la formación del patrón.
+export isBullishDojiStarPattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBearishGapRelativeToBodies(candle2)
+
+//@function Determina si existe la formación del patrón Estrella Doji bajista o bearish Doji star.
+//@returns true si existe la formación del patrón.
+export isBearishDojiStarPattern() =>
+    candle1 = 1, candle2 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBullishGapRelativeToBodies(candle2)
+
+//@function Determina si existe la formación del patrón Estrella del amanecer o morning star.
+//@returns true si existe la formación del patrón.
+export isMorningStarPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isBearishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isCloseAboveMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Estrella del atardecer o evening star.
+//@returns true si existe la formación del patrón.
+export isEveningStarPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isSmallBody(candle2, camdLib.getSessionsLength()) and camdLib.isBullishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isCloseBelowMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Estrella Doji del amanecer o morning Doji star.
+//@returns true si existe la formación del patrón.
+export isMorningDojiStarPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBearishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isCloseAboveMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Estrella Doji del atardecer o evening Doji star.
+//@returns true si existe la formación del patrón.
+export isEveningDojiStarPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBullishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isCloseBelowMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Bebé abandonado alcista o bullish abandoned baby.
+//@returns true si existe la formación del patrón.
+export isBullishAbandonedBabyPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBearishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isCloseAboveMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Bebé abandonado bajista o bearish abandoned baby.
+//@returns true si existe la formación del patrón.
+export isBearishAbandonedBabyPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     isDojiStarPattern(candle2) and camdLib.isBullishGapRelativeToShadows(candle2, candle1) and
+     camdLib.isCloseBelowMidpointPrevBody(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Triple estrella alcista o bullish tri-star.
+//@returns true si existe la formación del patrón.
+export isBullishTriStarPattern() =>
+    candle1 = 3, candle2 = 2, candle3 = 1, candle4 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isBlack(candle1) and isDojiStarPattern(candle2) and isDojiStarPattern(candle3) and isDojiStarPattern(candle4) and
+     camdLib.isLowerClose(candle2, candle1) and camdLib.isLowerClose(candle3, candle2) and camdLib.isHigherClose(candle4, candle3)
+
+//@function Determina si existe la formación del patrón Triple estrella bajista o bearish tri-star.
+//@returns true si existe la formación del patrón.
+export isBearishTriStarPattern() =>
+    candle1 = 3, candle2 = 2, candle3 = 1, candle4 = 0
+    camdLib.isBearishTrend() and
+     camdLib.isWhite(candle1) and isDojiStarPattern(candle2) and isDojiStarPattern(candle3) and isDojiStarPattern(candle4) and
+     camdLib.isHigherClose(candle2, candle1) and camdLib.isHigherClose(candle3, candle2) and camdLib.isLowerClose(candle4, candle3)
+     
+//@function Determina si existe la formación del patrón Dos cuervos en hueco alcista o upside-gap two crows.
+//@returns true si existe la formación del patrón.
+export isUpsideGapTwoCrowsPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and
+     camdLib.isBlack(candle2) and not camdLib.isBiggerRange(candle2, candle1) and camdLib.isBullishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isBlack(candle3) and camdLib.isEngulfingBar(candle3) and camdLib.isBullishGapRelativeToBodies(candle3, candle1)
+
+//@function Determina si existe la formación del patrón Dos cuervos o two crows.
+//@returns true si existe la formación del patrón.
+export isTwoCrowsPattern() =>
+    candle1 = 2, candle2 = 1, candle3 = 0
+    camdLib.isBullishTrend() and
+     camdLib.isWhite(candle1) and
+     camdLib.isBlack(candle2) and not camdLib.isBiggerRange(candle2, candle1) and camdLib.isBullishGapRelativeToBodies(candle2, candle1) and
+     camdLib.isBlack(candle3) and camdLib.isOpenInsidePrevBody(candle3) and camdLib.isCloseInsidePrevBody(candle3, candle1)

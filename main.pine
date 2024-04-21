@@ -4,12 +4,25 @@
 //@version=5
 indicator(title = "Patrones", overlay = true)
 
-import cdu4rte/camdPattern/10
+import cdu4rte/camdPattern/30
 
 // Contadores
+var int hammerCounter = 0
+var int invertedHamerCounter = 0
+var int hangingManCounter = 0
+var int shootingStarCounter = 0
 var int bullishBeltHoldLineCounter = 0
 var int bearishBeltHoldLineCounter = 0
+var int bullishEngulfingCounter = 0
+var int bearishEngulfingCounter = 0
+var int bullishHaramiCounter = 0
+var int bearishHaramiCounter = 0
 var int homingPigeonCounter = 0
+var int threeIdenticalBlackCrowsCounter = 0
+var int bullishCounterAttackLineCounter = 0
+var int bearishCounterAttackLineCounter = 0
+var int threeWhiteSoldiersCounter = 0
+var int threeBlackCrowsCounter = 0
 var int advanceBlockCounter = 0
 var int deliberationCounter = 0
 var int uniqueThreeRiversBottomCounter = 0
@@ -25,9 +38,94 @@ var int inNeckCounter = 0
 var int onNeckCounter = 0
 var int bullishSeparatingLinesCounter = 0
 var int bearishSeparatingLinesCounter = 0
+var int risingThreeMethodsCounter = 0
+var int fallingThreeMethodsCounter = 0
+var int matHoldBullishCounter = 0
+var int bullishThreeLineStrikeCounter = 0
+var int bearishThreeLineStrikeCounter = 0
+var int bullishDojiStarCounter = 0
+var int bearishDojiStarCounter = 0
+var int morningStarCounter = 0
+var int eveningStarCounter = 0
+var int morningDojiStarCounter = 0
+var int eveningDojiStarCounter = 0
+var int bullishAbandonedBabyCounter = 0
+var int bearishAbandonedBabyCounter = 0
+var int bullishTriStarCounter = 0
+var int bearishTriStarCounter = 0
+var int upsideGapTwoCrowsCounter  = 0
+var int twoCrowsCounter = 0
+
+const string PATTERN_THREE_IDENTICAL_BLACK_CROWS = "Tres cuervos negros idénticos"
+const string PATTERN_ADVANCE_BLOCK = "Parada previa"
+const string PATTERN_DELIBERATION = "reflexión"
+const string PATTERN_UNIQUE_THREE_RIVERS_BOTTOM = "Suelo de tres ríos"
+const string PATTERN_THREE_STARS_IN_THE_SOUTH = "Tres estrellas al sur"
+const string PATTERN_BULLISH_BREAKAWAY = "Escape alcista"
+const string PATTERN_BEARISH_BREAKAWAY = "Escape bajista"
+const string PATTERN_CONCEALING_BABY_SWALLOW = "Bebé oculto"
+const string PATTERN_STICK_SANDWICH = "Stick Sandwich"
+const string PATTERN_MATCHING_LOW = "Mínimos comunes"
+const string PATTERN_LADDER_BOTTOM = "Suelo escalonado"
+const string PATTERN_THRUSTING_LINE = "Línea de avance"
+const string PATTERN_IN_NECK = "Avance in-neck"
+const string PATTERN_ON_NECK = "Avance on-neck"
+const string PATTERN_BULLISH_SEPARATING_LINES = "Líneas de separación alcistas"
+const string PATTERN_BEARISH_SEPARATING_LINES = "Líneas de separación bajistas"
+const string PATTERN_RISING_THREE_METHODS = "Método de tres al alza"
+const string PATTERN_FALLING_THREE_METHODS = "Método de tres a la baja"
+const string PATTERN_HAMMER = "Martillo"
+const string PATTERN_INVERTED_HAMMER = "Martillo invertido"
+const string PATTERN_HANGING_MAN = "Ahorcado"
+const string PATTERN_SHOOTING_STAR = "Estrella Fugaz"
+const string PATTERN_BULLISH_BELT_HOLD_LINE = "Presa de cinturón alcista"
+const string PATTERN_BEARISH_BELT_HOLD_LINE  = "Presa de cinturón bajista"
+const string PATTERN_BULLISH_ENGULFING = "Envolvente alcista"
+const string PATTERN_BEARISH_ENGULFING = "Envolvente bajista"
+const string PATTERN_BULLISH_HARAMI = "Harami alcista"
+const string PATTERN_BEARISH_HARAMI = "Harami bajista"
+const string PATTERN_HOMING_PIGEON = "Paloma mensajera"
+const string PATTERN_BULLISH_COUNTER_ATTACK_LINE = "Línea de contraataque alcista"
+const string PATTERN_BEARISH_COUNTER_ATTACK_LINE = "Línea de contraataque bajista"
+const string PATTERN_THREE_WHITE_SOLDIERS = "Tres soldados blancos"
+const string PATTERN_THREE_BLACK_CROWS = "Tres cuervos negros"
+const string PATTERN_MAT_HOLD_BULLISH = "Presa de suelo alcista"
+const string PATTERN_BULLISH_THREE_LINE_STRIKE = "Triple strike alcista"
+const string PATTERN_BEARISH_THREE_LINE_STRIKE = "Triple strike bajista"
+const string PATTERN_BULLISH_DOJI_STAR = "Estrella Doji alcista"
+const string PATTERN_BEARISH_DOJI_STAR = "Estrella Doji bajista"
+const string PATTERN_MORNING_STAR = "Estrella del amanecer"
+const string PATTERN_EVENING_STAR = "Estrella del atardecer"
+const string PATTERN_MORNING_DOJI_STAR = "Estrella Doji del amanecer"
+const string PATTERN_EVENING_DOJI_STAR = "Estrella Doji del atardecer"
+const string PATTERN_BULLISH_ABANDONED_BABY = "Bebé abandonado alcista"
+const string PATTERN_BEARISH_ABANDONED_BABY = "Bebé abandonado bajista"
+const string PATTERN_BULLISH_TRI_STAR = "Triple estrella alcista"
+const string PATTERN_BEARISH_TRI_STAR = "Triple estrella bajista"
+const string PATTERN_UPSIDE_GAP_TWO_CROWS = "Dos cuervos en hueco alcista"
+const string PATTERN_TWO_CROWS = "Dos cuervos"
+
+const color COLOR_GREEN = color.rgb(189, 236, 182)
+const color COLOR_RED = color.rgb(242,186,201,0)
+const color COLOR_BLUE = color.new(color.blue, 90)
 
 // Llamada a los patrones.
+isHammer = camdPattern.isHammerPattern()
+isInvertedHammer = camdPattern.isInvertedHammerPattern()
+isHangingMan = camdPattern.isHangingManPattern()
+isShootingStar = camdPattern.isShootingStarPattern()
+isBullishBeltHoldLine = camdPattern.isBullishBeltHoldLinePattern()
+isBearishBeltHoldLine = camdPattern.isBearishBeltHoldLinePattern()
+isBullishEngulfing = camdPattern.isBullishEngulfingPattern()
+isBearishEngulfing = camdPattern.isBearishEngulfingPattern()
+isBullishHarami = camdPattern.isBullishHaramiPattern()
+isBearishHarami = camdPattern.isBearishHaramiPattern()
+isHomingPigeon = camdPattern.isHomingPigeonPattern()
 isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
+isBullishCounterAttackLine = camdPattern.isBullishCounterAttackLinePattern()
+isBearishCounterAttackLine = camdPattern.isBearishCounterAttackLinePattern()
+isThreeWhiteSoldiers = camdPattern.isThreeWhiteSoldiersPattern()
+isThreeBlackCrows = camdPattern.isThreeBlackCrowsPattern()
 isAdvanceBlock = camdPattern.isAdvanceBlockPattern()
 isDeliberation = camdPattern.isDeliberationPattern()
 isUniqueThreeRiversBottom = camdPattern.isUniqueThreeRiversBottomPattern()
@@ -43,107 +141,268 @@ isInNeck = camdPattern.isInNeckPatter()
 isOnNeck = camdPattern.isOnNeckPatter()
 isBullishSeparatingLines = camdPattern.isBullishSeparatingLinesPattern()
 isBearishSeparatingLines = camdPattern.isBearishSeparatingLinesPattern()
+isRisingThreeMethods = camdPattern.isRisingThreeMethodsPattern()
+isFallingThreeMethods = camdPattern.isFallingThreeMethodsPattern()
+isMatHoldBullish = camdPattern.isMatHoldBullishPattern()
+isBullishThreeLineStrike = camdPattern.isBullishThreeLineStrikePattern()
+isBearishThreeLineStrike = camdPattern.isBearishThreeLineStrikePattern()
+isBullishDojiStar = camdPattern.isBullishDojiStarPattern()
+isBearishDojiStar = camdPattern.isBearishDojiStarPattern()
+isMorningStar = camdPattern.isMorningStarPattern()
+isEveningStar = camdPattern.isEveningStarPattern()
+isMorningDojiStar = camdPattern.isMorningDojiStarPattern()
+isEveningDojiStar = camdPattern.isEveningDojiStarPattern()
+isBullisAbandonedBaby = camdPattern.isBullishAbandonedBabyPattern()
+isBearisAbandonedBaby = camdPattern.isBearishAbandonedBabyPattern()
+isBullishTriStar = camdPattern.isBullishTriStarPattern()
+isBearishTriStar = camdPattern.isBearishTriStarPattern()
+isUpsideGapTwoCrows = camdPattern.isUpsideGapTwoCrowsPattern()
+isTwoCrows = camdPattern.isTwoCrowsPattern()
+
+//@function Inserta una etiqueta en el gráfico.
+//@param txt El texto de la etiqueta.
+//@param color El color de la etiquita.
+insertLabel(string txt, color col) =>
+    label.new(x = bar_index, y = low, text = txt, style = label.style_arrowup, color = col, size = size.normal, yloc = yloc.belowbar)
+
+//@function Incrementa el contador.
+//@param counter El contador.
+//@returns El contador incrementado.
+incrementCounter(int counter) =>
+    counter + 1
 
 // Agrego etiqueta del patrón a las velas.
-if camdPattern.isHammerPattern()
-    label.new(x = bar_index, y = low, text = "Martillo", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isInvertedHammerPattern()
-    label.new(x = bar_index, y = low, text = "Martillo invertido", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isHangingManPattern()
-    label.new(x = bar_index, y = low, text = "Ahorcado", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isShootingStarPattern()
-    label.new(x = bar_index, y = low, text = "Estrella Fugaz", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isBullishBeltHoldLinePattern()
-    label.new(x = bar_index, y = low, text = "Presa de cinturón alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    bullishBeltHoldLineCounter := bullishBeltHoldLineCounter + 1
-else if camdPattern.isBearishBelthHoldLinePattern()
-    label.new(x = bar_index, y = low, text = "Presa de cinturón bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    bearishBeltHoldLineCounter := bearishBeltHoldLineCounter + 1
-else if camdPattern.isBullishEngulfingPattern()
-    label.new(x = bar_index, y = low, text = "Envolvente alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isBearishEngulfingPattern()
-    label.new(x = bar_index, y = low, text = "Envolvente bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isBullishHaramiPattern()
-    label.new(x = bar_index, y = low, text = "Harami alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isBearishHaramiPattern()
-    label.new(x = bar_index, y = low, text = "Harami bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-//else if camdPattern.isDojiPattern()
-//    label.new(x = bar_index, y = low, text = "Doji", style=label.style_label_down, color=color.yellow, size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isHomingPigeonPattern()
-    label.new(x = bar_index, y = low, text = "Paloma mensajera", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    homingPigeonCounter := homingPigeonCounter + 1
-else if camdPattern.isBullishCounterAttackLinePattern()
-    label.new(x = bar_index, y = low, text = "Línea de contraataque alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isBullishCounterAttackLinePattern()
-    label.new(x = bar_index, y = low, text = "Línea de contraataque bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isThreeWhiteSoldiersPattern()
-    label.new(x = bar_index, y = low, text = "Tres soldados blancos", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-else if camdPattern.isThreeBlackCrowsPattern()
-    label.new(x = bar_index, y = low, text = "Tres cuervos negros", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isThreeIdenticalBlackCrows
-    label.new(x = bar_index, y = low, text = "Tres cuervos negros idénticos", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-else if isAdvanceBlock
-    label.new(x = bar_index, y = low, text = "Parada previa", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    advanceBlockCounter := advanceBlockCounter + 1
-else if isDeliberation
-    label.new(x = bar_index, y = low, text = "reflexión", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    deliberationCounter := deliberationCounter + 1
-else if isUniqueThreeRiversBottom
-    label.new(x = bar_index, y = low, text = "Suelo de tres ríos", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    uniqueThreeRiversBottomCounter := uniqueThreeRiversBottomCounter + 1
-else if isThreeStarsInTheSouth
-    label.new(x = bar_index, y = low, text = "Tres estrellas al sur", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    threeStarsInTheSouthCounter := threeStarsInTheSouthCounter + 1
-else if isBullishBreakaway
-    label.new(x = bar_index, y = low, text = "Escape alcista", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    bullishBreakawayCounter := bullishBreakawayCounter + 1
-else if isBearishBreakaway
-    label.new(x = bar_index, y = low, text = "Escape bajista", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    bearishBreakawayCounter := bearishBreakawayCounter + 1
-else if isConcealingBabySwallow
-    label.new(x = bar_index, y = low, text = "Bebé oculto", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    concealingBabySwallowCounter := concealingBabySwallowCounter + 1
-else if isStickSandwich
-    label.new(x = bar_index, y = low, text = "Stick Sandwich", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    stickSandwichCounter := stickSandwichCounter + 1
-else if isMatchingLow
-    label.new(x = bar_index, y = low, text = "Mínimos comunes", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    matchingLowCounter := matchingLowCounter + 1
-else if isLadderBottom
-    label.new(x = bar_index, y = low, text = "Suelo escalonado", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    ladderBottomCounter := ladderBottomCounter + 1
-else if isThrustingLine
-    label.new(x = bar_index, y = low, text = "Línea de avance", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    thrustingLineCounter := thrustingLineCounter + 1
-else if isInNeck
-    label.new(x = bar_index, y = low, text = "Avance in-neck", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    inNeckCounter := inNeckCounter + 1
-else if isOnNeck
-    label.new(x = bar_index, y = low, text = "Avance on-neck", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    onNeckCounter := onNeckCounter + 1
-else if isBullishSeparatingLines
-    label.new(x = bar_index, y = low, text = "Líneas de separación alcistas", style=label.style_label_down, color=color.rgb(189, 236, 182), size=size.small, yloc=yloc.belowbar)
-    bullishSeparatingLinesCounter := bullishSeparatingLinesCounter + 1
-else if isBearishSeparatingLines
-    label.new(x = bar_index, y = low, text = "Líneas de separación bajistas", style=label.style_label_down, color=color.rgb(242,186,201,0), size=size.small, yloc=yloc.belowbar)
-    bearishSeparatingLinesCounter := bearishSeparatingLinesCounter + 1
+if isHammer
+    insertLabel(PATTERN_HAMMER, COLOR_GREEN)
+    hammerCounter := incrementCounter(hammerCounter)
+if isInvertedHammer
+    insertLabel(PATTERN_INVERTED_HAMMER, COLOR_GREEN)
+    invertedHamerCounter := incrementCounter(invertedHamerCounter)
+if isHangingMan
+    insertLabel(PATTERN_HANGING_MAN, COLOR_RED)
+    hangingManCounter := incrementCounter(hangingManCounter)
+if isShootingStar
+    insertLabel(PATTERN_SHOOTING_STAR, COLOR_RED)
+    shootingStarCounter := incrementCounter(shootingStarCounter)
+if isBullishBeltHoldLine
+    insertLabel(PATTERN_BULLISH_BELT_HOLD_LINE, COLOR_GREEN)    
+    bullishBeltHoldLineCounter := incrementCounter(bullishBeltHoldLineCounter)
+if isBearishBeltHoldLine
+    insertLabel(PATTERN_BEARISH_BELT_HOLD_LINE, COLOR_RED)    
+    bearishBeltHoldLineCounter := incrementCounter(bearishBeltHoldLineCounter)
+if isBullishEngulfing
+    insertLabel(PATTERN_BULLISH_ENGULFING, COLOR_GREEN)
+    bullishEngulfingCounter := incrementCounter(bullishEngulfingCounter)
+if isBearishEngulfing
+    insertLabel(PATTERN_BEARISH_ENGULFING, COLOR_RED)
+    bearishEngulfingCounter := incrementCounter(bearishEngulfingCounter)
+if isBullishHarami
+    insertLabel(PATTERN_BULLISH_HARAMI, COLOR_GREEN)
+    bullishHaramiCounter := incrementCounter(bullishHaramiCounter)
+if isBearishHarami
+    insertLabel(PATTERN_BEARISH_HARAMI, COLOR_RED)
+    bearishHaramiCounter := incrementCounter(bearishHaramiCounter)
+if isHomingPigeon
+    insertLabel(PATTERN_HOMING_PIGEON, COLOR_GREEN)
+    homingPigeonCounter := incrementCounter(homingPigeonCounter)
+if isThreeBlackCrows
+    insertLabel(PATTERN_THREE_BLACK_CROWS, COLOR_RED)
+    threeBlackCrowsCounter := incrementCounter(threeBlackCrowsCounter)
+if isThreeIdenticalBlackCrows
+    insertLabel(PATTERN_THREE_IDENTICAL_BLACK_CROWS, COLOR_RED)
+    threeIdenticalBlackCrowsCounter := incrementCounter(threeIdenticalBlackCrowsCounter)
+if isAdvanceBlock
+    insertLabel(PATTERN_ADVANCE_BLOCK, COLOR_RED)
+    advanceBlockCounter := incrementCounter(advanceBlockCounter)
+if isDeliberation
+    insertLabel(PATTERN_DELIBERATION, COLOR_RED)
+    deliberationCounter := incrementCounter(deliberationCounter)
+if isUniqueThreeRiversBottom
+    insertLabel(PATTERN_UNIQUE_THREE_RIVERS_BOTTOM, COLOR_GREEN)
+    uniqueThreeRiversBottomCounter := incrementCounter(uniqueThreeRiversBottomCounter)
+if isThreeStarsInTheSouth
+    insertLabel(PATTERN_THREE_STARS_IN_THE_SOUTH, COLOR_GREEN)
+    threeStarsInTheSouthCounter := incrementCounter(threeStarsInTheSouthCounter)
+if isBullishBreakaway
+    insertLabel(PATTERN_BULLISH_BREAKAWAY, COLOR_GREEN)
+    bullishBreakawayCounter := incrementCounter(bullishBreakawayCounter)
+if isBearishBreakaway
+    insertLabel(PATTERN_BEARISH_BREAKAWAY, COLOR_RED)
+    bearishBreakawayCounter := incrementCounter(bearishBreakawayCounter)
+if isConcealingBabySwallow
+    insertLabel(PATTERN_CONCEALING_BABY_SWALLOW, COLOR_GREEN)
+    concealingBabySwallowCounter := incrementCounter(concealingBabySwallowCounter)
+if isStickSandwich
+    insertLabel(PATTERN_STICK_SANDWICH, COLOR_GREEN)
+    stickSandwichCounter := incrementCounter(stickSandwichCounter)
+if isMatchingLow
+    insertLabel(PATTERN_MATCHING_LOW, COLOR_GREEN)
+    matchingLowCounter := incrementCounter(matchingLowCounter)
+if isLadderBottom
+    insertLabel(PATTERN_LADDER_BOTTOM, COLOR_GREEN)
+    ladderBottomCounter := incrementCounter(ladderBottomCounter)
+if isThrustingLine
+    insertLabel(PATTERN_THRUSTING_LINE, COLOR_RED)
+    thrustingLineCounter := incrementCounter(thrustingLineCounter)
+if isInNeck
+    insertLabel(PATTERN_IN_NECK, COLOR_RED)
+    inNeckCounter := incrementCounter(inNeckCounter)
+if isOnNeck
+    insertLabel(PATTERN_ON_NECK, COLOR_RED)
+    onNeckCounter := incrementCounter(onNeckCounter)
+if isBullishSeparatingLines
+    insertLabel(PATTERN_BULLISH_SEPARATING_LINES, COLOR_GREEN)
+    bullishSeparatingLinesCounter := incrementCounter(bullishSeparatingLinesCounter)
+if isBearishSeparatingLines
+    insertLabel(PATTERN_BEARISH_SEPARATING_LINES, COLOR_RED)
+    bearishSeparatingLinesCounter := incrementCounter(bearishSeparatingLinesCounter)
+if isRisingThreeMethods
+    insertLabel(PATTERN_RISING_THREE_METHODS, COLOR_GREEN)
+    risingThreeMethodsCounter := incrementCounter(risingThreeMethodsCounter)
+if isFallingThreeMethods
+    insertLabel(PATTERN_FALLING_THREE_METHODS, COLOR_RED)
+    fallingThreeMethodsCounter := incrementCounter(fallingThreeMethodsCounter)
+if isMatHoldBullish
+    insertLabel(PATTERN_MAT_HOLD_BULLISH, COLOR_GREEN)
+    matHoldBullishCounter := incrementCounter(matHoldBullishCounter)
+if isBullishThreeLineStrike
+    insertLabel(PATTERN_BULLISH_THREE_LINE_STRIKE, COLOR_GREEN)
+    bullishThreeLineStrikeCounter := incrementCounter(bullishThreeLineStrikeCounter)
+if isBearishThreeLineStrike
+    insertLabel(PATTERN_BEARISH_THREE_LINE_STRIKE, COLOR_RED)
+    bearishThreeLineStrikeCounter := incrementCounter(bearishThreeLineStrikeCounter)
+if isBullishDojiStar
+    insertLabel(PATTERN_BULLISH_DOJI_STAR, COLOR_GREEN)
+    bullishDojiStarCounter := incrementCounter(bullishDojiStarCounter)
+if isThreeWhiteSoldiers
+    insertLabel(PATTERN_THREE_WHITE_SOLDIERS, COLOR_GREEN)
+    threeWhiteSoldiersCounter := incrementCounter(threeWhiteSoldiersCounter)
+if isBullishCounterAttackLine
+    insertLabel(PATTERN_BULLISH_COUNTER_ATTACK_LINE, COLOR_GREEN)
+    bullishCounterAttackLineCounter := incrementCounter(bullishCounterAttackLineCounter)
+if isBearishCounterAttackLine
+    insertLabel(PATTERN_BEARISH_COUNTER_ATTACK_LINE, COLOR_RED)
+    bearishCounterAttackLineCounter := incrementCounter(bearishCounterAttackLineCounter)
+if isBearishDojiStar
+    insertLabel(PATTERN_BEARISH_DOJI_STAR, COLOR_RED)
+    bearishDojiStarCounter := incrementCounter(bearishDojiStarCounter)
+if isMorningStar
+    insertLabel(PATTERN_MORNING_STAR, COLOR_GREEN)
+    morningStarCounter := incrementCounter(morningStarCounter)
+if isEveningStar
+    insertLabel(PATTERN_EVENING_STAR, COLOR_RED)
+    eveningStarCounter := incrementCounter(eveningStarCounter)
+if isMorningDojiStar
+    insertLabel(PATTERN_MORNING_DOJI_STAR, COLOR_GREEN)
+    morningDojiStarCounter := incrementCounter(morningDojiStarCounter)
+if isEveningStar
+    insertLabel(PATTERN_EVENING_DOJI_STAR, COLOR_RED)
+    eveningDojiStarCounter := incrementCounter(eveningDojiStarCounter)
+if isBullisAbandonedBaby
+    insertLabel(PATTERN_BULLISH_ABANDONED_BABY, COLOR_GREEN)
+    bullishAbandonedBabyCounter := incrementCounter(bullishAbandonedBabyCounter)
+if isBearisAbandonedBaby
+    insertLabel(PATTERN_BEARISH_ABANDONED_BABY, COLOR_RED)
+    bearishAbandonedBabyCounter := incrementCounter(bearishAbandonedBabyCounter)
+if isBullishTriStar
+    insertLabel(PATTERN_BULLISH_TRI_STAR, COLOR_GREEN)
+    bullishTriStarCounter := incrementCounter(bullishTriStarCounter)
+if isBearishTriStar
+    insertLabel(PATTERN_BEARISH_TRI_STAR, COLOR_RED)
+    bearishTriStarCounter := incrementCounter(bearishTriStarCounter)
+if isUpsideGapTwoCrows
+    insertLabel(PATTERN_UPSIDE_GAP_TWO_CROWS, COLOR_RED)
+    upsideGapTwoCrowsCounter := incrementCounter(upsideGapTwoCrowsCounter)
+if isTwoCrows
+    insertLabel(PATTERN_TWO_CROWS, COLOR_RED)
+    twoCrowsCounter := incrementCounter(twoCrowsCounter)
 
 // Imprimo los contadores de los patrones en la ventana de datos.
-plotchar(bullishBeltHoldLineCounter, "Presa de cinturón alcista", "", location = location.top)
-plotchar(bearishBeltHoldLineCounter, "Presa de cinturón bajista", "", location = location.top)
-plotchar(homingPigeonCounter, "Paloma mensajera", "", location = location.top)
-plotchar(advanceBlockCounter, "Parada previa", "", location = location.top)
-plotchar(deliberationCounter, "reflexión", "", location = location.top)
-plotchar(uniqueThreeRiversBottomCounter, "Suelo de tres ríos", "", location = location.top)
-plotchar(threeStarsInTheSouthCounter, "Tres estrellas al sur", "", location = location.top)
-plotchar(bullishBreakawayCounter, "Escape alcista", "", location = location.top)
-plotchar(bearishBreakawayCounter, "Escape bajista", "", location = location.top)
-plotchar(concealingBabySwallowCounter, "Bebé oculto", "", location = location.top)
-plotchar(stickSandwichCounter, "Stick Sandwich", "", location = location.top)
-plotchar(matchingLowCounter, "Mínimos comunes", "", location = location.top)
-plotchar(ladderBottomCounter, "Suelo escalonado", "", location = location.top)
-plotchar(thrustingLineCounter, "Línea de avance", "", location = location.top)
-plotchar(inNeckCounter, "Avance in-neck", "", location = location.top)
-plotchar(onNeckCounter, "Avance on-neck", "", location = location.top)
-plotchar(bullishSeparatingLinesCounter, "Líneas de separación alcistas", "", location = location.top)
-plotchar(bearishSeparatingLinesCounter, "Líneas de separación bajistas", "", location = location.top)
+plotchar(hammerCounter, PATTERN_HAMMER, "", location = location.top)
+plotchar(invertedHamerCounter, PATTERN_INVERTED_HAMMER, "", location = location.top)
+plotchar(hangingManCounter, PATTERN_HANGING_MAN, "", location = location.top)
+plotchar(bullishBeltHoldLineCounter, PATTERN_BULLISH_BELT_HOLD_LINE, "", location = location.top)
+plotchar(bearishBeltHoldLineCounter, PATTERN_BEARISH_BELT_HOLD_LINE, "", location = location.top)
+plotchar(homingPigeonCounter, PATTERN_HOMING_PIGEON, "", location = location.top)
+plotchar(advanceBlockCounter, PATTERN_ADVANCE_BLOCK, "", location = location.top)
+plotchar(deliberationCounter, PATTERN_DELIBERATION, "", location = location.top)
+plotchar(uniqueThreeRiversBottomCounter, PATTERN_UNIQUE_THREE_RIVERS_BOTTOM, "", location = location.top)
+plotchar(threeStarsInTheSouthCounter, PATTERN_THREE_STARS_IN_THE_SOUTH, "", location = location.top)
+plotchar(bullishBreakawayCounter, PATTERN_BULLISH_BREAKAWAY, "", location = location.top)
+plotchar(bearishBreakawayCounter, PATTERN_BEARISH_BREAKAWAY, "", location = location.top)
+plotchar(concealingBabySwallowCounter, PATTERN_CONCEALING_BABY_SWALLOW, "", location = location.top)
+plotchar(stickSandwichCounter, PATTERN_STICK_SANDWICH, "", location = location.top)
+plotchar(matchingLowCounter, PATTERN_MATCHING_LOW, "", location = location.top)
+plotchar(ladderBottomCounter, PATTERN_LADDER_BOTTOM, "", location = location.top)
+plotchar(thrustingLineCounter, PATTERN_THRUSTING_LINE, "", location = location.top)
+plotchar(inNeckCounter, PATTERN_IN_NECK, "", location = location.top)
+plotchar(onNeckCounter, PATTERN_ON_NECK, "", location = location.top)
+plotchar(bullishSeparatingLinesCounter, PATTERN_BULLISH_SEPARATING_LINES, "", location = location.top)
+plotchar(bearishSeparatingLinesCounter, PATTERN_BEARISH_SEPARATING_LINES, "", location = location.top)
+plotchar(risingThreeMethodsCounter, PATTERN_RISING_THREE_METHODS, "", location = location.top)
+plotchar(fallingThreeMethodsCounter, PATTERN_FALLING_THREE_METHODS, "", location = location.top)
+plotchar(matHoldBullishCounter, PATTERN_MAT_HOLD_BULLISH, "", location = location.top)
+plotchar(bullishThreeLineStrikeCounter, PATTERN_BULLISH_THREE_LINE_STRIKE, "", location = location.top)
+plotchar(bearishThreeLineStrikeCounter, PATTERN_BEARISH_THREE_LINE_STRIKE, "", location = location.top)
+plotchar(bullishDojiStarCounter, PATTERN_BULLISH_DOJI_STAR, "", location = location.top)
+plotchar(bearishDojiStarCounter, PATTERN_BEARISH_DOJI_STAR, "", location = location.top)
+plotchar(morningStarCounter, PATTERN_MORNING_STAR, "", location = location.top)
+plotchar(eveningStarCounter, PATTERN_EVENING_STAR, "", location = location.top)
+plotchar(morningDojiStarCounter, PATTERN_MORNING_DOJI_STAR, "", location = location.top)
+plotchar(eveningDojiStarCounter, PATTERN_EVENING_DOJI_STAR, "", location = location.top)
+plotchar(bullishAbandonedBabyCounter, PATTERN_BULLISH_ABANDONED_BABY, "", location = location.top)
+plotchar(bearishAbandonedBabyCounter, PATTERN_BEARISH_ABANDONED_BABY, "", location = location.top)
+plotchar(bullishTriStarCounter, PATTERN_BULLISH_TRI_STAR, "", location = location.top)
+plotchar(bearishTriStarCounter, PATTERN_BEARISH_TRI_STAR, "", location = location.top)
+plotchar(upsideGapTwoCrowsCounter, PATTERN_UPSIDE_GAP_TWO_CROWS, "", location = location.top)
+plotchar(twoCrowsCounter, PATTERN_TWO_CROWS, "", location = location.top)
+
+// Resalta la vela en el gráfico.
+// bgcolor(isHammer ? COLOR_BLUE : na)
+// bgcolor(isInvertedHammer ? COLOR_BLUE : na)
+// bgcolor(isHangingMan ? COLOR_BLUE : na)
+// bgcolor(isShootingStar ? COLOR_BLUE : na)
+// bgcolor(isBullishBeltHoldLine ? COLOR_BLUE : na)
+// bgcolor(isBearishBeltHoldLine ? COLOR_BLUE : na)
+// bgcolor(isBullishEngulfing ? COLOR_BLUE : na)
+// bgcolor(isBearishEngulfing ? COLOR_BLUE : na)
+// bgcolor(isBullishHarami ? COLOR_BLUE : na)
+// bgcolor(isBearishHarami ? COLOR_BLUE : na)
+// bgcolor(isHomingPigeon ? COLOR_BLUE : na)
+// bgcolor(isThreeBlackCrows ? COLOR_BLUE : na)
+// bgcolor(isThreeIdenticalBlackCrows ? COLOR_BLUE : na)
+// bgcolor(isAdvanceBlock ? COLOR_BLUE : na)
+// bgcolor(isDeliberation ? COLOR_BLUE : na)
+// bgcolor(isUniqueThreeRiversBottom ? COLOR_BLUE : na)
+// bgcolor(isThreeStarsInTheSouth ? COLOR_BLUE : na)
+// bgcolor(isBullishBreakaway ? COLOR_BLUE : na)
+// bgcolor(isBearishBreakaway ? COLOR_BLUE : na)
+// bgcolor(isConcealingBabySwallow ? COLOR_BLUE : na)
+// bgcolor(isStickSandwich ? COLOR_BLUE : na)
+// bgcolor(isMatchingLow ? COLOR_BLUE : na)
+// bgcolor(isLadderBottom ? COLOR_BLUE : na)
+// bgcolor(isThrustingLine ? COLOR_BLUE : na)
+// bgcolor(isInNeck ? COLOR_BLUE : na)
+// bgcolor(isOnNeck ? COLOR_BLUE : na)
+// bgcolor(isBullishSeparatingLines ? COLOR_BLUE : na)
+// bgcolor(isBearishSeparatingLines ? COLOR_BLUE : na)
+// bgcolor(isRisingThreeMethods ? COLOR_BLUE : na)
+// bgcolor(isFallingThreeMethods ? COLOR_BLUE : na)
+// bgcolor(isMatHoldBullish ? COLOR_BLUE : na)
+// bgcolor(isBullishThreeLineStrike ? COLOR_BLUE : na)
+// bgcolor(isBearishThreeLineStrike ? COLOR_BLUE : na)
+// bgcolor(isBullishDojiStar ? COLOR_BLUE : na)
+// bgcolor(isThreeWhiteSoldiers ? COLOR_BLUE : na)
+// bgcolor(isBullishCounterAttackLine ? COLOR_BLUE : na)
+// bgcolor(isBearishCounterAttackLine ? COLOR_BLUE : na)
+// bgcolor(isBearishDojiStar ? COLOR_BLUE : na)
+// bgcolor(isMorningStar ? COLOR_BLUE : na)
+// bgcolor(isEveningStar ? COLOR_BLUE : na)
+// bgcolor(isMorningDojiStar ? COLOR_BLUE : na)
+// bgcolor(isEveningDojiStar ? COLOR_BLUE : na)
+// bgcolor(isBullishAbandonedBaby ? COLOR_BLUE : na)
+// bgcolor(isBearishAbandonedBaby ? COLOR_BLUE : na)
+// bgcolor(isBullishTriStar ? COLOR_BLUE : na)
+// bgcolor(isBearishTriStar ? COLOR_BLUE : na)
+// bgcolor(isUpsideGapTwoCrows ? COLOR_BLUE : na)
+// bgcolor(isTwoCrows ? COLOR_BLUE : na)
