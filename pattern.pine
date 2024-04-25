@@ -8,19 +8,16 @@ library (title = "camdPattern")
 import cdu4rte/camdLib/37
 
 // Función para verificar el patrón de vela martillo.
-export isHammerPattern() =>    
-    camdLib.isBearishTrend() and
-     close != open and
-     camdLib.getLowerShadow() >= 2 * camdLib.getBodySize() and  
-     camdLib.getUpperShadow() < 0.25 * camdLib.getBodySize()
-
-// Función para verificar el patrón de vela martillo.
 // index El índice de la vela.
 export isHammerPattern(int index) => 
     camdLib.isBearishTrend() and
      close[index] != open[index] and
      camdLib.getLowerShadow(index) >= 2 * camdLib.getBodySize(index) and
      camdLib.getUpperShadow(index) < 0.25 * camdLib.getBodySize(index)
+
+// Función para verificar el patrón de vela martillo.
+export isHammerPattern() =>    
+    isHammerPattern(0)
 
 // Martillo invertido o inverted hammer.
 export isInvertedHammerPattern() =>
@@ -479,7 +476,7 @@ export isDownsideTasukiGapPattern() =>
      camdLib.isWhite(candle3) and camdLib.isOpenInsidePrevBody(candle3, candle2) and camdLib.isCloseAbovePrevOpen(candle3, candle2) and
      camdLib.isUpperShadowBelowPrevLowerShadow(candle3, candle1)
 
-//@function Determina si existe la formación del patrón Hueco alcista en método de tres o upside gap three methods..
+//@function Determina si existe la formación del patrón Hueco alcista en método de tres o upside gap three methods.
 //@returns true si existe la formación del patrón.
 export isUpsideGapThreeMethodsPattern() =>
     candle1 = 2, candle2 = 1, candle3 = 0
@@ -516,4 +513,22 @@ export isDownsideGappingSideBySideWhiteLinesPattern() =>
      camdLib.isSmallerRange(candle2, candle1) and camdLib.isSmallerRange(candle3, candle1) and
      camdLib.isBearishGapRelativeToShadows(candle2, candle1) and camdLib.isBearishGapRelativeToShadows(candle3, candle1) and
      camdLib.isOpenNearToPrevOpen(candle3, candle2) and camdLib.isCloseNearToPrevClose(candle3, candle2)
+
+//@function Determina si existe la formación del patrón Golpe alcista o bullish kicking.
+//@returns true si existe la formación del patrón.
+export isBullishKickingPattern() =>
+    candle1 = 1, candle2 = 0
+    (camdLib.isBullishTrend() or camdLib.isBearishTrend()) and
+     camdLib.isBlack(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isWhite(candle2) and camdLib.isBigBody(candle2, camdLib.getSessionsLength()) and
+     camdLib.isBullishGapRelativeToShadows(candle2, candle1)
+     
+//@function Determina si existe la formación del patrón Golpe bajista o bearish kicking.
+//@returns true si existe la formación del patrón.
+export isBearishKickingPattern() =>
+    candle1 = 1, candle2 = 0
+    (camdLib.isBullishTrend() or camdLib.isBearishTrend()) and
+     camdLib.isWhite(candle1) and camdLib.isBigBody(candle1, camdLib.getSessionsLength()) and
+     camdLib.isBlack(candle2) and camdLib.isBigBody(candle2, camdLib.getSessionsLength()) and
+     camdLib.isBearishGapRelativeToShadows(candle2, candle1)
 
