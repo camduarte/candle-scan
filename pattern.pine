@@ -7,6 +7,57 @@ library (title = "camdPattern")
 
 import cdu4rte/camdLib/37
 
+//@function Determina si existe la formación del patrón Estrella Doji o Doji star.
+//@returns true si existe la formación del patrón.
+export isDojiStarPattern(int index) =>
+    threshold_percent = 5 
+    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getUpperShadow(index) > camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getLowerShadow(index) > camdLib.getRange(index) * threshold_percent / 100
+
+//@function Determina si existe la formación del patrón Doji libélula o Dragonfly Doji.
+//@returns true si existe la formación del patrón.
+export isDragonflyDojiPattern(int index) =>
+    threshold_percent = 5
+    lower_shadow_threshold_percent = 50 // Umbral para definir qué consideramos una sombra inferior larga.
+    
+    lower_shadow_long_enough = camdLib.getLowerShadow(index) > camdLib.getRange(index) * lower_shadow_threshold_percent / 100
+
+    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getUpperShadow(index) > camdLib.getRange(index) * threshold_percent / 100 and
+     lower_shadow_long_enough and
+     math.max(open[index], close[index]) <= high[index] and // Verifico que la apertura y el cierre estén en el tercio superior del rango.
+     math.min(open[index], close[index]) > low[index] + camdLib.getRange(index) / 3 * 2 
+
+//@function Determina si existe la formación del patrón Doji de piernas largas o Longlegged Doji.
+//@returns true si existe la formación del patrón.
+export isLongleggedDojiPattern(int index) =>
+    threshold_percent = 5
+    leg_threshold_percent = 30 // Umbral para definir qué consideramos piernas largas.
+
+    upper_leg_long_enough = camdLib.getUpperShadow(index) > camdLib.getRange(index) * leg_threshold_percent / 100
+    lower_leg_long_enough = camdLib.getLowerShadow(index) > camdLib.getRange(index) * leg_threshold_percent / 100
+
+    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
+     upper_leg_long_enough and
+     lower_leg_long_enough and    
+     math.max(open[index], close[index]) <= low[index] + camdLib.getRange(index) / 3 * 2 and // Verifico que la apertura y el cierre estén en el tercio superior del rango.
+     math.min(open[index], close[index]) >= low[index] + camdLib.getRange(index) / 3 
+
+//@function Determina si existe la formación del patrón Doji lápida o Gravestone Doji.
+//@returns true si existe la formación del patrón.
+export isGravestoneDojiPattern(int index) =>
+    threshold_percent = 5
+    higher_shadow_threshold_percent = 50 // Umbral para definir qué consideramos una sombra superior larga.
+    
+    higher_shadow_long_enough = camdLib.getUpperShadow(index) > camdLib.getRange(index) * higher_shadow_threshold_percent / 100
+
+    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
+     camdLib.getLowerShadow(index) > camdLib.getRange(index) * threshold_percent / 100 and
+     higher_shadow_long_enough and
+     math.max(open[index], close[index]) < low[index] + camdLib.getRange(index) / 3 and // Verifico que la apertura y el cierre estén en el tercio inferior del rango.
+     math.min(open[index], close[index]) >=  low[index] 
+
 // Función para verificar el patrón de vela martillo.
 // index El índice de la vela.
 export isHammerPattern(int index) => 
@@ -78,16 +129,6 @@ export isBearishHaramiPattern() =>
      close < open and close[1] > open[1] and
      close > open[1] and open < close[1]
 
-export isDojiPattern() =>
-    // Calcular el tamaño del cuerpo de la vela
-    body_size = math.abs(close - open)
-    // Calcular la sombra superior e inferior
-    upper_shadow = high - math.max(open, close)
-    lower_shadow = math.min(open, close) - low
-    // Verificar si la vela es un Doji
-    //body_size < 0.0025 * close and upper_shadow < 0.05 * close and lower_shadow < 0.05 * close
-    body_size < 0.0025 * close
-
 // Paloma mensajera o Homing pigeon
 export isHomingPigeonPattern() =>
     camdLib.isBearishTrend() and
@@ -154,7 +195,7 @@ export isDeliberationPattern() =>
      camdLib.isHigherClose(close[1], close[2]) and
      camdLib.isOpenInsidePrevBody(1) and
      camdLib.isExhaustionPattern(close[1], open[1], close, open, high) and
-     (not camdLib.isHigherClose(close, close[1]) or camdLib.isBullishGap() or isDojiPattern())
+     (not camdLib.isHigherClose(close, close[1]) or camdLib.isBullishGap() or isDojiStarPattern(0))
 
 // Suelo de tres ríos o Unique three rivers bottom.
 export isUniqueThreeRiversBottomPattern() =>
@@ -342,15 +383,6 @@ export isBearishThreeLineStrikePattern() =>
      camdLib.isLowerClose(candle2, candle1) and camdLib.isLowerClose(candle3, candle2) and
      camdLib.isOpenInsidePrevBody(candle2) and camdLib.isOpenInsidePrevBody(candle3) and
      camdLib.isWhite(candle4) and camdLib.isCloseHigherPrevOpen(candle4, candle1) and camdLib.isOpenBelowPrevClose(candle4, candle3)
-
-//@function Determina si existe la formación del patrón Estrella Doji o Doji star.
-//@returns true si existe la formación del patrón.
-isDojiStarPattern(int index) =>
-    //threshold_percent = input.float(0.1, title="Umbral de porcentaje (%)")
-    threshold_percent = 0.1    
-    camdLib.getBodySize(index) < camdLib.getRange(index) * threshold_percent / 100 and
-     camdLib.getUpperShadow(index) > camdLib.getRange(index) * threshold_percent / 100 and
-     camdLib.getLowerShadow(index) > camdLib.getRange(index) * threshold_percent / 100
 
 //@function Determina si existe la formación del patrón Estrella Doji alcista o bullish Doji star.
 //@returns true si existe la formación del patrón.
