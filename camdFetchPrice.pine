@@ -1,0 +1,353 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © cdu4rte
+
+//@version=5
+indicator("camdFetchPrice", overlay=true)
+
+var float maxPrice = input(defval =  300, title = "Precio máximo")
+var float minVolume = input(defval =  10000, title = "Volúmen mínimo")
+var int day = input(defval =  26, title = "Día")
+
+const string TICKER_TRAN = "BYMA:TRAN"
+const string TICKER_BBAR = "BYMA:BBAR"
+const string TICKER_BHIP = "BYMA:BHIP"
+const string TICKER_BMA = "BYMA:BMA"
+const string TICKER_BPAT = "BYMA:BPAT"
+const string TICKER_GGAL = "BYMA:GGAL"
+const string TICKER_SUPV = "BYMA:SUPV"
+const string TICKER_VALO = "BYMA:VALO"
+const string TICKER_AGRO = "BYMA:AGRO"
+const string TICKER_ALUA = "BYMA:ALUA"
+const string TICKER_AUSO = "BYMA:AUSO"
+const string TICKER_GAMI = "BYMA:GAMI"
+const string TICKER_BOLT = "BYMA:BOLT"
+const string TICKER_BYMA = "BYMA:BYMA"
+const string TICKER_CVH = "BYMA:CVH"
+const string TICKER_CGPA2 = "BYMA:CGPA2"
+const string TICKER_CAPX = "BYMA:CAPX"
+const string TICKER_CARC = "BYMA:CARC"
+const string TICKER_CADO = "BYMA:CADO"
+const string TICKER_CELU = "BYMA:CELU"
+const string TICKER_CECO2 = "BYMA:CECO2"
+const string TICKER_CEPU2 = "BYMA:CEPU2"
+const string TICKER_URBA = "BYMA:URBA"
+const string TICKER_COMO = "BYMA:COMO"
+const string TICKER_INTR = "BYMA:INTR"
+const string TICKER_CTIO = "BYMA:CTIO"
+const string TICKER_COUR = "BYMA:COUR"
+const string TICKER_CRES = "BYMA:CRES"
+const string TICKER_DGCU2 = "BYMA:DGCU2"
+const string TICKER_DGCE = "BYMA:DGCE"
+const string TICKER_DOME = "BYMA:DOME"
+const string TICKER_DYCA = "BYMA:DYCA"
+const string TICKER_EDSH = "BYMA:EDSH"
+const string TICKER_EDLH = "BYMA:EDLH"
+const string TICKER_EMAC = "BYMA:EMAC"
+const string TICKER_EDN = "BYMA:EDN"
+const string TICKER_DSUR = "BYMA:DSUR"
+const string TICKER_FERR = "BYMA:FERR"
+const string TICKER_FIPL = "BYMA:FIPL"
+const string TICKER_REGE = "BYMA:REGE"
+const string TICKER_GARO = "BYMA:GARO"
+const string TICKER_GCDI = "BYMA:GCDI"
+const string TICKER_GRIM = "BYMA:GRIM"
+const string TICKER_GCLA = "BYMA:GCLA"
+const string TICKER_OEST = "BYMA:OEST"
+const string TICKER_HAVA = "BYMA:HAVA"
+const string TICKER_HARG = "BYMA:HARG"
+const string TICKER_HSAT = "BYMA:HSAT"
+const string TICKER_HULI = "BYMA:HULI"
+const string TICKER_PATA = "BYMA:PATA"
+const string TICKER_ROSE = "BYMA:ROSE"
+const string TICKER_INAG = "BYMA:INAG"
+const string TICKER_IEBA = "BYMA:IEBA"
+const string TICKER_INVJ = "BYMA:INVJ"
+const string TICKER_IRSA = "BYMA:IRSA"
+const string TICKER_RICH = "BYMA:RICH"
+const string TICKER_LEDE = "BYMA:LEDE"
+const string TICKER_LOMA = "BYMA:LOMA"
+const string TICKER_LONG = "BYMA:LONG"
+const string TICKER_MTR = "BYMA:MTR"
+const string TICKER_METR = "BYMA:METR"
+const string TICKER_MIRG = "BYMA:MIRG"
+const string TICKER_MOLA = "BYMA:MOLA"
+const string TICKER_SEMI = "BYMA:SEMI"
+const string TICKER_MOLI = "BYMA:MOLI"
+const string TICKER_MORI = "BYMA:MORI"
+const string TICKER_GBAN = "BYMA:GBAN"
+const string TICKER_NCON = "BYMA:NCON"
+const string TICKER_OVOP = "BYMA:OVOP"
+const string TICKER_PAMP = "BYMA:PAMP"
+const string TICKER_PREN1 = "BYMA:PREN1"
+const string TICKER_PATR = "BYMA:PATR"
+const string TICKER_POLL = "BYMA:POLL"
+const string TICKER_RIGO = "BYMA:RIGO"
+const string TICKER_SAMI = "BYMA:SAMI"
+const string TICKER_COME = "BYMA:COME"
+const string TICKER_TECO2 = "BYMA:TECO2"
+const string TICKER_TXAR = "BYMA:TXAR"
+const string TICKER_TGNO4 = "BYMA:TGNO4"
+const string TICKER_TGSU2 = "BYMA:TGSU2"
+const string TICKER_YPFD = "BYMA:YPFD"
+
+// [DAY_TRAN, CLOSE_TRAN] = request.security(symbol = TICKER_TRAN, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+// [DAY_BBAR, CLOSE_BBAR] = request.security(symbol = TICKER_BBAR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_BHIP, CLOSE_BHIP] = request.security(symbol = TICKER_BHIP, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_BMA, CLOSE_BMA] = request.security(symbol = TICKER_BMA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_BPAT, CLOSE_BPAT] = request.security(symbol = TICKER_BPAT, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_GGAL, CLOSE_GGAL] = request.security(symbol = TICKER_GGAL, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_SUPV, CLOSE_SUPV] = request.security(symbol = TICKER_SUPV, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_VALO, CLOSE_VALO] = request.security(symbol = TICKER_VALO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_AGRO, CLOSE_AGRO] = request.security(symbol = TICKER_AGRO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_ALUA, CLOSE_ALUA] = request.security(symbol = TICKER_ALUA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_AUSO, CLOSE_AUSO] = request.security(symbol = TICKER_AUSO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+// [DAY_GAMI, CLOSE_GAMI] = request.security(symbol = TICKER_GAMI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_BYMA, CLOSE_BYMA] = request.security(symbol = TICKER_BYMA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CVH, CLOSE_CVH] = request.security(symbol = TICKER_CVH, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CGPA2, CLOSE_CGPA2] = request.security(symbol = TICKER_CGPA2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CAPX, CLOSE_CAPX] = request.security(symbol = TICKER_CAPX, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CARC, CLOSE_CARC] = request.security(symbol = TICKER_CARC, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CADO, CLOSE_CADO] = request.security(symbol = TICKER_CADO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CELU, CLOSE_CELU] = request.security(symbol = TICKER_CELU, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CECO2, CLOSE_CECO2] = request.security(symbol = TICKER_CECO2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_BOLT, CLOSE_BOLT] = request.security(symbol = TICKER_BOLT, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+// [DAY_CEPU2, CLOSE_CEPU2] = request.security(symbol = TICKER_CEPU2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_URBA, CLOSE_URBA] = request.security(symbol = TICKER_URBA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_COMO, CLOSE_COMO] = request.security(symbol = TICKER_COMO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_INTR, CLOSE_INTR] = request.security(symbol = TICKER_INTR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CTIO, CLOSE_CTIO] = request.security(symbol = TICKER_CTIO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_COUR, CLOSE_COUR] = request.security(symbol = TICKER_COUR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_CRES, CLOSE_CRES] = request.security(symbol = TICKER_CRES, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_DGCU2, CLOSE_DGCU2] = request.security(symbol = TICKER_DGCU2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_DGCE, CLOSE_DGCE] = request.security(symbol = TICKER_DGCE, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_DOME, CLOSE_DOME] = request.security(symbol = TICKER_DOME, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+// [DAY_DYCA, CLOSE_DYCA] = request.security(symbol = TICKER_DYCA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_EDSH, CLOSE_EDSH] = request.security(symbol = TICKER_EDSH, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_EDLH, CLOSE_EDLH] = request.security(symbol = TICKER_EDLH, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_EDN, CLOSE_EDN] = request.security(symbol = TICKER_EDN, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_DSUR, CLOSE_DSUR] = request.security(symbol = TICKER_DSUR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_FERR, CLOSE_FERR] = request.security(symbol = TICKER_FERR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_FIPL, CLOSE_FIPL] = request.security(symbol = TICKER_FIPL, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_REGE, CLOSE_REGE] = request.security(symbol = TICKER_REGE, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_GARO, CLOSE_GARO] = request.security(symbol = TICKER_GARO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+// [DAY_EMAC, CLOSE_EMAC] = request.security(symbol = TICKER_EMAC, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+[DAY_GCDI, CLOSE_GCDI] = request.security(symbol = TICKER_GCDI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_GRIM, CLOSE_GRIM] = request.security(symbol = TICKER_GRIM, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_GCLA, CLOSE_GCLA] = request.security(symbol = TICKER_GCLA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_OEST, CLOSE_OEST] = request.security(symbol = TICKER_OEST, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_HAVA, CLOSE_HAVA] = request.security(symbol = TICKER_HAVA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_HARG, CLOSE_HARG] = request.security(symbol = TICKER_HARG, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_HSAT, CLOSE_HSAT] = request.security(symbol = TICKER_HSAT, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_HULI, CLOSE_HULI] = request.security(symbol = TICKER_HULI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_PATA, CLOSE_PATA] = request.security(symbol = TICKER_PATA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_ROSE, CLOSE_ROSE] = request.security(symbol = TICKER_ROSE, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+[DAY_INAG, CLOSE_INAG] = request.security(symbol = TICKER_INAG, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_IEBA, CLOSE_IEBA] = request.security(symbol = TICKER_IEBA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_INVJ, CLOSE_INVJ] = request.security(symbol = TICKER_INVJ, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_IRSA, CLOSE_IRSA] = request.security(symbol = TICKER_IRSA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_RICH, CLOSE_RICH] = request.security(symbol = TICKER_RICH, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_LEDE, CLOSE_LEDE] = request.security(symbol = TICKER_LEDE, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_LOMA, CLOSE_LOMA] = request.security(symbol = TICKER_LOMA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_LONG, CLOSE_LONG] = request.security(symbol = TICKER_LONG, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_MTR, CLOSE_MTR] = request.security(symbol = TICKER_MTR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_METR, CLOSE_METR] = request.security(symbol = TICKER_METR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+[DAY_MIRG, CLOSE_MIRG] = request.security(symbol = TICKER_MIRG, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_MOLA, CLOSE_MOLA] = request.security(symbol = TICKER_MOLA, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_SEMI, CLOSE_SEMI] = request.security(symbol = TICKER_SEMI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_MOLI, CLOSE_MOLI] = request.security(symbol = TICKER_MOLI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_MORI, CLOSE_MORI] = request.security(symbol = TICKER_MORI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_GBAN, CLOSE_GBAN] = request.security(symbol = TICKER_GBAN, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_NCON, CLOSE_NCON] = request.security(symbol = TICKER_NCON, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_OVOP, CLOSE_OVOP] = request.security(symbol = TICKER_OVOP, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_PAMP, CLOSE_PAMP] = request.security(symbol = TICKER_PAMP, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_PREN1, CLOSE_PREN1] = request.security(symbol = TICKER_PREN1, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+[DAY_PATR, CLOSE_PATR] = request.security(symbol = TICKER_PATR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_POLL, CLOSE_POLL] = request.security(symbol = TICKER_POLL, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_RIGO, CLOSE_RIGO] = request.security(symbol = TICKER_RIGO, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_SAMI, CLOSE_SAMI] = request.security(symbol = TICKER_SAMI, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_COME, CLOSE_COME] = request.security(symbol = TICKER_COME, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_TECO2, CLOSE_TECO2] = request.security(symbol = TICKER_TECO2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_TXAR, CLOSE_TXAR] = request.security(symbol = TICKER_TXAR, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_TGNO4, CLOSE_TGNO4] = request.security(symbol = TICKER_TGNO4, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_TGSU2, CLOSE_TGSU2] = request.security(symbol = TICKER_TGSU2, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+[DAY_YPFD, CLOSE_YPFD] = request.security(symbol = TICKER_YPFD, timeframe = "D", expression = [dayofmonth, close], lookahead = barmerge.lookahead_off, ignore_invalid_symbol = true, calc_bars_count = 1)
+
+// if not na(CLOSE_TRAN) and CLOSE_TRAN <= maxPrice and DAY_TRAN == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_TRAN, CLOSE_TRAN)
+
+// if not na(CLOSE_BBAR) and CLOSE_BBAR <= maxPrice and DAY_BBAR == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BBAR, CLOSE_BBAR)
+// if not na(CLOSE_BHIP) and CLOSE_BHIP <= maxPrice and DAY_BHIP == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BHIP, CLOSE_BHIP)
+// if not na(CLOSE_BMA) and CLOSE_BMA <= maxPrice and DAY_BMA == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BMA, CLOSE_BMA)
+// if not na(CLOSE_BPAT) and CLOSE_BPAT <= maxPrice and DAY_BPAT == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BPAT, CLOSE_BPAT)
+// if not na(CLOSE_GGAL) and CLOSE_GGAL <= maxPrice and DAY_GGAL == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_GGAL, CLOSE_GGAL)
+// if not na(CLOSE_SUPV) and CLOSE_SUPV <= maxPrice and DAY_SUPV == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_SUPV, CLOSE_SUPV)
+// if not na(CLOSE_VALO) and CLOSE_VALO <= maxPrice and DAY_VALO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_VALO, CLOSE_VALO)
+// if not na(CLOSE_AGRO) and CLOSE_AGRO <= maxPrice and DAY_AGRO== day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_AGRO, CLOSE_AGRO)
+// if not na(CLOSE_ALUA) and CLOSE_ALUA <= maxPrice and DAY_ALUA == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_ALUA, CLOSE_ALUA)
+// if not na(CLOSE_AUSO) and CLOSE_AUSO <= maxPrice and DAY_AUSO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_AUSO, CLOSE_AUSO)
+
+// if not na(CLOSE_GAMI) and CLOSE_GAMI <= maxPrice and DAY_GAMI == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_GAMI, CLOSE_GAMI)
+// if not na(CLOSE_BOLT) and CLOSE_BOLT <= maxPrice and DAY_BOLT == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BOLT, CLOSE_BOLT)
+// if not na(CLOSE_BYMA) and CLOSE_BYMA <= maxPrice and DAY_BYMA == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_BYMA, CLOSE_BYMA)
+// if not na(CLOSE_CVH) and CLOSE_CVH <= maxPrice and DAY_CVH == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CVH, CLOSE_CVH)
+// if not na(CLOSE_CGPA2) and CLOSE_CGPA2 <= maxPrice and DAY_CGPA2 == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CGPA2, CLOSE_CGPA2)
+// if not na(CLOSE_CAPX) and CLOSE_CAPX <= maxPrice and DAY_CAPX == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CAPX, CLOSE_CAPX)
+// if not na(CLOSE_CARC) and CLOSE_CARC <= maxPrice and DAY_CARC == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CARC, CLOSE_CARC)
+// if not na(CLOSE_CADO) and CLOSE_CADO <= maxPrice and DAY_CADO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CADO, CLOSE_CADO)
+// if not na(CLOSE_CELU) and CLOSE_CELU <= maxPrice and DAY_CELU == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CELU, CLOSE_CELU)
+// if not na(CLOSE_CECO2) and CLOSE_CECO2 <= maxPrice and DAY_CECO2 == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CECO2, CLOSE_CECO2)
+
+// if not na(CLOSE_CEPU2) and CLOSE_CEPU2 <= maxPrice and DAY_CEPU2 == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CEPU2, CLOSE_CEPU2)
+// if not na(CLOSE_URBA) and CLOSE_URBA <= maxPrice and DAY_URBA == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_URBA, CLOSE_URBA)
+// if not na(CLOSE_COMO) and CLOSE_COMO <= maxPrice and DAY_COMO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_COMO, CLOSE_COMO)
+// if not na(CLOSE_INTR) and CLOSE_INTR <= maxPrice and DAY_INTR == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_INTR, CLOSE_INTR)
+// if not na(CLOSE_CTIO) and CLOSE_CTIO <= maxPrice and DAY_CTIO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CTIO, CLOSE_CTIO)
+// if not na(CLOSE_COUR) and CLOSE_COUR <= maxPrice and DAY_COUR == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_COUR, CLOSE_COUR)
+// if not na(CLOSE_CRES) and CLOSE_CRES <= maxPrice and DAY_CRES == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_CRES, CLOSE_CRES)
+// if not na(CLOSE_DGCU2) and CLOSE_DGCU2 <= maxPrice and DAY_DGCU2 == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_DGCU2, CLOSE_DGCU2)
+// if not na(CLOSE_DGCE) and CLOSE_DGCE <= maxPrice and DAY_DGCE == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_DGCE, CLOSE_DGCE)
+// if not na(CLOSE_DOME) and CLOSE_DOME <= maxPrice and DAY_DOME == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_DOME, CLOSE_DOME)
+
+// if not na(CLOSE_DYCA) and CLOSE_DYCA <= maxPrice and DAY_DYCA == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_DYCA, CLOSE_DYCA)
+// if not na(CLOSE_EDSH) and CLOSE_EDSH <= maxPrice and DAY_EDSH == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_EDSH, CLOSE_EDSH)
+// if  not na(CLOSE_EDLH) and CLOSE_EDLH <= maxPrice and DAY_EDLH == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_EDLH, CLOSE_EDLH)
+// if not na(CLOSE_EDN) and CLOSE_EDN <= maxPrice and DAY_EDN == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_EDN, CLOSE_EDN)
+// if not na(CLOSE_DSUR) and CLOSE_DSUR <= maxPrice and DAY_DSUR == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_DSUR, CLOSE_DSUR)
+// if not na(CLOSE_FERR) and CLOSE_FERR <= maxPrice and DAY_FERR == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_FERR, CLOSE_FERR)
+// if not na(CLOSE_FIPL) and CLOSE_FIPL <= maxPrice and DAY_FIPL == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_FIPL, CLOSE_FIPL)
+// if not na(CLOSE_REGE) and CLOSE_REGE <= maxPrice and DAY_REGE == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_REGE, CLOSE_REGE)
+// if not na(CLOSE_GARO) and CLOSE_GARO <= maxPrice and DAY_GARO == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_GARO, CLOSE_GARO)
+// if not na(CLOSE_EMAC) and CLOSE_EMAC <= maxPrice and DAY_EMAC == day
+//     log.info("Símbolo: {0} - Precio: {1}", TICKER_EMAC, CLOSE_EMAC)
+
+if not na(CLOSE_GCDI) and CLOSE_GCDI <= maxPrice and DAY_GCDI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_GCDI, CLOSE_GCDI)
+if not na(CLOSE_GRIM) and CLOSE_GRIM <= maxPrice and DAY_GRIM == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_GRIM, CLOSE_GRIM)
+if not na(CLOSE_GCLA) and CLOSE_GCLA <= maxPrice and DAY_GCLA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_GCLA, CLOSE_GCLA)
+if not na(CLOSE_OEST) and CLOSE_OEST <= maxPrice and DAY_OEST == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_OEST, CLOSE_OEST)
+if not na(CLOSE_HAVA) and CLOSE_HAVA <= maxPrice and DAY_HAVA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_HAVA, CLOSE_HAVA)
+if not na(CLOSE_HARG) and CLOSE_HARG <= maxPrice and DAY_HARG == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_HARG, CLOSE_HARG)
+if not na(CLOSE_HSAT) and CLOSE_HSAT <= maxPrice and DAY_HSAT == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_HSAT, CLOSE_HSAT)
+if not na(CLOSE_HULI) and CLOSE_HULI <= maxPrice and DAY_HULI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_HULI, CLOSE_HULI)
+if not na(CLOSE_PATA) and CLOSE_PATA <= maxPrice and DAY_PATA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_PATA, CLOSE_PATA)
+if not na(CLOSE_ROSE) and CLOSE_ROSE <= maxPrice and DAY_ROSE == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_ROSE, CLOSE_ROSE)
+
+if not na(CLOSE_INAG) and CLOSE_INAG <= maxPrice and DAY_INAG == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_INAG, CLOSE_INAG)
+if not na(CLOSE_IEBA) and CLOSE_IEBA <= maxPrice and DAY_IEBA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_IEBA, CLOSE_IEBA)
+if not na(CLOSE_INVJ) and CLOSE_INVJ <= maxPrice and DAY_INVJ == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_INVJ, CLOSE_INVJ)
+if not na(CLOSE_IRSA) and CLOSE_IRSA <= maxPrice and DAY_IRSA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_IRSA, CLOSE_IRSA)
+if not na(CLOSE_RICH) and CLOSE_RICH <= maxPrice and DAY_RICH == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_RICH, CLOSE_RICH)
+if not na(CLOSE_LEDE) and CLOSE_LEDE <= maxPrice and DAY_LEDE == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_LEDE, CLOSE_LEDE)
+if not na(CLOSE_LOMA) and CLOSE_LOMA <= maxPrice and DAY_LOMA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_LOMA, CLOSE_LOMA)
+if not na(CLOSE_LONG) and CLOSE_LONG <= maxPrice and DAY_LONG == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_LONG, CLOSE_LONG)
+if not na(CLOSE_MTR) and CLOSE_MTR <= maxPrice and DAY_MTR == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_MTR, CLOSE_MTR)
+if not na(CLOSE_METR) and CLOSE_METR <= maxPrice and DAY_METR == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_METR, CLOSE_METR)
+
+if not na(CLOSE_MIRG) and CLOSE_MIRG <= maxPrice and DAY_MIRG == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_MIRG, CLOSE_MIRG)
+if not na(CLOSE_MOLA) and CLOSE_MOLA <= maxPrice and DAY_MOLA == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_MOLA, CLOSE_MOLA)
+if not na(CLOSE_SEMI) and CLOSE_SEMI <= maxPrice and DAY_SEMI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_SEMI, CLOSE_SEMI)
+if not na(CLOSE_MOLI) and CLOSE_MOLI <= maxPrice and DAY_MOLI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_MOLI, CLOSE_MOLI)
+if not na(CLOSE_MORI) and CLOSE_MORI <= maxPrice and DAY_MORI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_MORI, CLOSE_MORI)
+if not na(CLOSE_GBAN) and CLOSE_GBAN <= maxPrice and DAY_GBAN == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_GBAN, CLOSE_GBAN)
+if not na(CLOSE_NCON) and CLOSE_NCON <= maxPrice and DAY_NCON == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_NCON, CLOSE_NCON)
+if not na(CLOSE_OVOP) and CLOSE_OVOP <= maxPrice and DAY_OVOP == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_OVOP, CLOSE_OVOP)
+if not na(CLOSE_PAMP) and CLOSE_PAMP <= maxPrice and DAY_PAMP == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_PAMP, CLOSE_PAMP)
+if not na(CLOSE_PREN1) and CLOSE_PREN1 <= maxPrice and DAY_PREN1 == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_PREN1, CLOSE_PREN1)
+
+if not na(CLOSE_PATR) and CLOSE_PATR <= maxPrice and DAY_PATR == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_PATR, CLOSE_PATR)
+if not na(CLOSE_POLL) and CLOSE_POLL <= maxPrice and DAY_POLL == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_POLL, CLOSE_POLL)
+if not na(CLOSE_RIGO) and CLOSE_RIGO <= maxPrice and DAY_RIGO == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_RIGO, CLOSE_RIGO)
+if not na(CLOSE_SAMI) and CLOSE_SAMI <= maxPrice and DAY_SAMI == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_SAMI, CLOSE_SAMI)
+if not na(CLOSE_COME) and CLOSE_COME <= maxPrice and DAY_COME == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_COME, CLOSE_COME)
+if not na(CLOSE_TECO2) and CLOSE_TECO2 <= maxPrice and DAY_TECO2 == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_TECO2, CLOSE_TECO2)
+if not na(CLOSE_TXAR) and CLOSE_TXAR <= maxPrice and DAY_TXAR == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_TXAR, CLOSE_TXAR)
+if not na(CLOSE_TGNO4) and CLOSE_TGNO4 <= maxPrice and DAY_TGNO4 == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_TGNO4, CLOSE_TGNO4)
+if not na(CLOSE_TGSU2) and CLOSE_TGSU2 <= maxPrice and DAY_TGSU2 == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_TGSU2, CLOSE_TGSU2)
+if not na(CLOSE_YPFD) and CLOSE_YPFD <= maxPrice and DAY_YPFD == day
+    log.info("Símbolo: {0} - Precio: {1}", TICKER_YPFD, CLOSE_YPFD)
+
