@@ -72,6 +72,8 @@ bool showPattern = input(true, "Mostrar patrones")
 bool showBullishPattern = input(true, "Mostrar patrones alcistas")
 bool showBearishPattern = input(true, "Mostrar patrones bajistas")
 bool showBarNearToEMA14 = input(false, "Vela cerca de la EMA de 14")
+bool showMaxCloseRSI = input(true, "Máximo histórico sin sobre compra")
+bool showMinCloseRSI = input(true, "Mínimo histórico sin sobre compra")
 
 bool showHammer = input(true, PATTERN_HAMMER)
 bool showDojiStar = input(false, PATTERN_DOJI_STAR)
@@ -512,7 +514,7 @@ if showPattern
 // plotchar(upsideGappingSideBySideWhiteLinesCounter, PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, "", location = location.top)
 // plotchar(downsideGappingSideBySideWhiteLinesCounter, PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, "", location = location.top)
 // plotchar(bullishKickingCounter, PATTER_BULLISH_KICKING, "", location = location.top)
-// plotchar(bearishKickingCounter, PATTER_BEARISH_KICKING, "", location = location.top)
+plotchar(bearishKickingCounter, PATTER_BEARISH_KICKING, "", location = location.top)
 
 // Resalta la vela en el gráfico.
 // bgcolor(isDojiStar ? COLOR_BLUE : na)
@@ -596,4 +598,35 @@ isNearEMA14() =>
 
 // Llama a la función y dibuja un marcador si la vela está cerca de la EMA de 14
 if isNearEMA14() and showBarNearToEMA14
-    label.new(x = bar_index, y = high, text = "Cerca de EMA de 14", style=label.style_label_down, color=color.yellow, size=size.normal, yloc = yloc.abovebar)
+    label.new(x = bar_index, y = high, text = "Cerca de EMA de 14", style=label.style_label_down, color = COLOR_YELLOW, size=size.normal, yloc = yloc.abovebar)
+
+// Maximo historico sin sobre compra.
+var float maxCloseRSI = na
+float currentRSI = ta.rsi(close, 14)
+
+if bar_index > 0
+    if close > maxCloseRSI and currentRSI < 70 and currentRSI > 30
+        maxCloseRSI := close
+else
+    maxCloseRSI := close
+
+// Variable auxiliar para almacenar el máximo cierre sin sobre compra habilitado/deshabilitado
+var float lineValueMaxCloseRSI = na
+lineValueMaxCloseRSI := showMaxCloseRSI ? maxCloseRSI : na
+
+plot(series = lineValueMaxCloseRSI, color = COLOR_GREEN, linewidth = 2, title = "Cierre máximo histórico sin sobre compra")
+
+// Mínimo historico sin sobre venta.
+var float minCloseRSI = na
+
+if bar_index > 0
+    if close < minCloseRSI and currentRSI < 70 and currentRSI > 30
+        minCloseRSI := close
+else
+    minCloseRSI := close
+
+// Variable auxiliar para almacenar el mínimo cierre sin sobre venta habilitado/deshabilitado
+var float lineValueMinCloseRSI = na
+lineValueMinCloseRSI := showMinCloseRSI ? minCloseRSI : na
+
+plot(series = lineValueMinCloseRSI, color = COLOR_RED, linewidth = 2, title = "Cierre mínimo histórico sin sobre venta")
