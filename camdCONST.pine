@@ -1,0 +1,561 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © cdu4rte
+
+//@version=5
+
+// @description Almacena Símbolos
+library("camdCONST")
+
+// Acciones argentinas
+const string TICKER_TRAN = "BYMA:TRAN"
+const string TICKER_BBAR = "BYMA:BBAR"
+const string TICKER_BHIP = "BYMA:BHIP"
+const string TICKER_BMA = "BYMA:BMA"
+const string TICKER_BPAT = "BYMA:BPAT"
+const string TICKER_GGAL = "BYMA:GGAL"
+const string TICKER_SUPV = "BYMA:SUPV"
+const string TICKER_VALO = "BYMA:VALO"
+const string TICKER_AGRO = "BYMA:AGRO"
+const string TICKER_ALUA = "BYMA:ALUA"
+const string TICKER_AUSO = "BYMA:AUSO"
+const string TICKER_GAMI = "BYMA:GAMI"
+const string TICKER_BOLT = "BYMA:BOLT"
+const string TICKER_BYMA = "BYMA:BYMA"
+const string TICKER_CVH = "BYMA:CVH"
+const string TICKER_CGPA2 = "BYMA:CGPA2"
+const string TICKER_CAPX = "BYMA:CAPX"
+const string TICKER_CARC = "BYMA:CARC"
+const string TICKER_CADO = "BYMA:CADO"
+const string TICKER_CELU = "BYMA:CELU"
+const string TICKER_CECO2 = "BYMA:CECO2"
+const string TICKER_CEPU2 = "BYMA:CEPU2"
+const string TICKER_URBA = "BYMA:URBA"
+const string TICKER_COMO = "BYMA:COMO"
+const string TICKER_INTR = "BYMA:INTR"
+const string TICKER_CTIO = "BYMA:CTIO"
+const string TICKER_COUR = "BYMA:COUR"
+const string TICKER_CRES = "BYMA:CRES"
+const string TICKER_DGCU2 = "BYMA:DGCU2"
+const string TICKER_DGCE = "BYMA:DGCE"
+const string TICKER_DOME = "BYMA:DOME"
+const string TICKER_DYCA = "BYMA:DYCA"
+const string TICKER_EDSH = "BYMA:EDSH"
+const string TICKER_EDLH = "BYMA:EDLH"
+const string TICKER_EMAC = "BYMA:EMAC"
+const string TICKER_EDN = "BYMA:EDN"
+const string TICKER_DSUR = "BYMA:DSUR"
+const string TICKER_FERR = "BYMA:FERR"
+const string TICKER_FIPL = "BYMA:FIPL"
+const string TICKER_REGE = "BYMA:REGE"
+const string TICKER_GARO = "BYMA:GARO"
+const string TICKER_GCDI = "BYMA:GCDI"
+const string TICKER_GRIM = "BYMA:GRIM"
+const string TICKER_GCLA = "BYMA:GCLA"
+const string TICKER_OEST = "BYMA:OEST"
+const string TICKER_HAVA = "BYMA:HAVA"
+const string TICKER_HARG = "BYMA:HARG"
+const string TICKER_HSAT = "BYMA:HSAT"
+const string TICKER_HULI = "BYMA:HULI"
+const string TICKER_PATA = "BYMA:PATA"
+const string TICKER_ROSE = "BYMA:ROSE"
+const string TICKER_INAG = "BYMA:INAG"
+const string TICKER_IEBA = "BYMA:IEBA"
+const string TICKER_INVJ = "BYMA:INVJ"
+const string TICKER_IRSA = "BYMA:IRSA"
+const string TICKER_RICH = "BYMA:RICH"
+const string TICKER_LEDE = "BYMA:LEDE"
+const string TICKER_LOMA = "BYMA:LOMA"
+const string TICKER_LONG = "BYMA:LONG"
+const string TICKER_MTR = "BYMA:MTR"
+const string TICKER_METR = "BYMA:METR"
+const string TICKER_MIRG = "BYMA:MIRG"
+const string TICKER_MOLA = "BYMA:MOLA"
+const string TICKER_SEMI = "BYMA:SEMI"
+const string TICKER_MOLI = "BYMA:MOLI"
+const string TICKER_MORI = "BYMA:MORI"
+const string TICKER_GBAN = "BYMA:GBAN"
+const string TICKER_NCON = "BYMA:NCON"
+const string TICKER_OVOP = "BYMA:OVOP"
+const string TICKER_PAMP = "BYMA:PAMP"
+const string TICKER_PREN1 = "BYMA:PREN1"
+const string TICKER_PATR = "BYMA:PATR"
+const string TICKER_POLL = "BYMA:POLL"
+const string TICKER_RIGO = "BYMA:RIGO"
+const string TICKER_SAMI = "BYMA:SAMI"
+const string TICKER_COME = "BYMA:COME"
+const string TICKER_TECO2 = "BYMA:TECO2"
+const string TICKER_TXAR = "BYMA:TXAR"
+const string TICKER_TGNO4 = "BYMA:TGNO4"
+const string TICKER_TGSU2 = "BYMA:TGSU2"
+const string TICKER_YPFD = "BYMA:YPFD"
+
+// Acciones extranjeras con CEDEAR
+const string TICKER_NYSE_MMM = "NYSE:MMM"
+const string TICKER_NYSE_ABT = "NYSE:ABT"
+const string TICKER_NYSE_ABBV = "NYSE:ABBV"
+const string TICKER_NYSE_ANF = "NYSE:ANF"
+const string TICKER_NYSE_ACN = "NYSE:ACN"
+const string TICKER_NYSE_ADGO = "NYSE:ADGO"
+const string TICKER_XETRA_ADS = "XETRA:ADS"
+const string TICKER_NASDAQ_ADBE = "NASDAQ:ADBE"
+const string TICKER_NYSE_JMIA = "NYSE:JMIA"
+const string TICKER_NYSE_AAP = "NYSE:AAP"
+const string TICKER_NASDAQ_AMD = "NASDAQ:AMD"
+const string TICKER_NYSE_AEG = "NYSE:AEG"
+const string TICKER_NYSE_AEM = "NYSE:AEM"
+const string TICKER_NASDAQ_GS_ABNB = "NASDAQ GS:ABNB"
+const string TICKER_NYSE_BABA = "NYSE:BABA"
+const string TICKER_NASDAQ_GOOGLE = "NASDAQ:GOOGL"
+const string TICKER_NASDAQ_AABA = "NASDAQ:AABA"
+const string TICKER_NYSE_MO = "NYSE:MO"
+const string TICKER_NYSE_AOCA = "NYSE:AOCA"
+const string TICKER_NYSE_AMZN = "NYSE:AMZN"
+const string TICKER_NASDAQ_ABEV = "NASDAQ:ABEV"
+const string TICKER_NYSE_AMX = "NYSE:AMX"
+const string TICKER_NASDAQ_AAL = "NASDAQ:AAL"
+const string TICKER_NYSE_AXP = "NYSE:AXP"
+const string TICKER_NYSE_AIG = "NYSE:AIG"
+const string TICKER_NASDAQ_AMGN = "NASDAQ:AMGN"
+const string TICKER_NASDAQ_ADI = "NASDAQ:ADI"
+const string TICKER_NASDAQ_AAPL = "NASDAQ:AAPL"
+const string TICKER_NASDAQ_AMAT = "NASDAQ:AMAT"
+const string TICKER_NYSE_ARCO = "NYSE:ARCO"
+const string TICKER_NYSE_ARKK = "NYSE Arca:ARKK"
+const string TICKER_NYSE_AZN = "NYSE:AZN"
+const string TICKER_NYSE_T = "NYSE:T"
+const string TICKER_NASDAQ_ADP = "NASDAQ:ADP"
+const string TICKER_NYSE_AVY = "NYSE:AVY"
+const string TICKER_NASDAQ_CAR = "NASDAQ:CAR"
+const string TICKER_NASDAQ_BIDU = "NASDAQ:BIDU"
+const string TICKER_NYSE_BBD = "NYSE:BBD"
+const string TICKER_NYSE_BSBR = "NYSE:BSBR"
+const string TICKER_NYSE_SAN = "NYSE:SAN"
+const string TICKER_NYSE_BA_C = "NYSE:BA.C"
+const string TICKER_NYSE_BCS = "NYSE:BCS"
+const string TICKER_NYSE_GOLD = "NYSE:GOLD"
+const string TICKER_FRANKFURT_BAS = "FRANKFURT:BAS"
+const string TICKER_FRANKFURT_BAYN = "FRANKFURT:BAYN"
+const string TICKER_NYSE_BRKB = "NYSE:BRKB"
+const string TICKER_NYSE_BHP = "NYSE:BHP"
+const string TICKER_NYSE_BBV = "NYSE:BBV"
+const string TICKER_NYSE_BIOX = "NYSE American:BIOX"
+const string TICKER_NASDAQ_BIIB = "NASDAQ:BIIB"
+const string TICKER_NASDAQ_GM_BITF = "NASDAQ GM:BITF"
+const string TICKER_NASDAQ_BB = "NASDAQ:BB"
+const string TICKER_NASDAQ_BKNG = "NASDAQ:BKNG"
+const string TICKER_NYSE_BP = "NYSE:BP"
+const string TICKER_NYSE_LND = "NYSE:LND"
+const string TICKER_NYSE_BAK = "NYSE:BAK"
+const string TICKER_NYSE_BRFS = "NYSE:BRFS"
+const string TICKER_NYSE_BMY = "NYSE:BMY"
+const string TICKER_NASDAQ_AVGO = "NASDAQ:AVGO"
+const string TICKER_NYSE_BNG = "NYSE:BNG"
+const string TICKER_NYSE_CAJ = "NYSE:CAJ"
+const string TICKER_NYSE_CAH = "NYSE:CAH"
+const string TICKER_NYSE_CCL = "NYSE:CCL"
+const string TICKER_NYSE_CAT = "NYSE:CAT"
+const string TICKER_NYSE_CX = "NYSE:CX"
+const string TICKER_NYSE_EBR = "NYSE:EBR"
+const string TICKER_NYSE_SCHW = "NYSE:SCHW"
+const string TICKER_NYSE_CVX = "NYSE:CVX"
+const string TICKER_NYSE_LFC = "NYSE:LFC"
+const string TICKER_NYSE_SNP = "NYSE:SNP"
+const string TICKER_NASDAQ_CSCO = "NASDAQ:CSCO"
+const string TICKER_NYSE_C = "NYSE:C"
+const string TICKER_NYSE_KOFM = "NYSE:KOFM"
+const string TICKER_NYSE_CDE = "NYSE:CDE"
+const string TICKER_NASDAQ_COIN = "NASDAQ:COIN"
+const string TICKER_NYSE_CL = "NYSE:CL"
+
+array<string> TICKERS = array.new_string(0)
+array.push(TICKERS, TICKER_TRAN)
+array.push(TICKERS, TICKER_BBAR)
+array.push(TICKERS, TICKER_BHIP)
+array.push(TICKERS, TICKER_BMA)
+array.push(TICKERS, TICKER_BPAT)
+array.push(TICKERS, TICKER_GGAL)
+array.push(TICKERS, TICKER_SUPV)
+array.push(TICKERS, TICKER_VALO)
+array.push(TICKERS, TICKER_AGRO)
+array.push(TICKERS, TICKER_ALUA)
+array.push(TICKERS, TICKER_AUSO)
+array.push(TICKERS, TICKER_GAMI)
+array.push(TICKERS, TICKER_BOLT)
+array.push(TICKERS, TICKER_BYMA)
+array.push(TICKERS, TICKER_CVH)
+array.push(TICKERS, TICKER_CGPA2)
+array.push(TICKERS, TICKER_CAPX)
+array.push(TICKERS, TICKER_CARC)
+array.push(TICKERS, TICKER_CADO)
+array.push(TICKERS, TICKER_CELU)
+array.push(TICKERS, TICKER_CECO2)
+array.push(TICKERS, TICKER_CEPU2)
+array.push(TICKERS, TICKER_URBA)
+array.push(TICKERS, TICKER_COMO)
+array.push(TICKERS, TICKER_INTR)
+array.push(TICKERS, TICKER_CTIO)
+array.push(TICKERS, TICKER_COUR)
+array.push(TICKERS, TICKER_CRES)
+array.push(TICKERS, TICKER_DGCU2)
+array.push(TICKERS, TICKER_DGCE)
+array.push(TICKERS, TICKER_DOME)
+array.push(TICKERS, TICKER_DYCA)
+array.push(TICKERS, TICKER_EDSH)
+array.push(TICKERS, TICKER_EDLH)
+array.push(TICKERS, TICKER_EMAC)
+array.push(TICKERS, TICKER_EDN)
+array.push(TICKERS, TICKER_DSUR)
+array.push(TICKERS, TICKER_FERR)
+array.push(TICKERS, TICKER_FIPL)
+array.push(TICKERS, TICKER_REGE)
+array.push(TICKERS, TICKER_GARO)
+array.push(TICKERS, TICKER_GCDI)
+array.push(TICKERS, TICKER_GRIM)
+array.push(TICKERS, TICKER_GCLA)
+array.push(TICKERS, TICKER_OEST)
+array.push(TICKERS, TICKER_HAVA)
+array.push(TICKERS, TICKER_HARG)
+array.push(TICKERS, TICKER_HSAT)
+array.push(TICKERS, TICKER_HULI)
+array.push(TICKERS, TICKER_PATA)
+array.push(TICKERS, TICKER_ROSE)
+array.push(TICKERS, TICKER_INAG)
+array.push(TICKERS, TICKER_IEBA)
+array.push(TICKERS, TICKER_INVJ)
+array.push(TICKERS, TICKER_IRSA)
+array.push(TICKERS, TICKER_RICH)
+array.push(TICKERS, TICKER_LEDE)
+array.push(TICKERS, TICKER_LOMA)
+array.push(TICKERS, TICKER_LONG)
+array.push(TICKERS, TICKER_MTR)
+array.push(TICKERS, TICKER_METR)
+array.push(TICKERS, TICKER_MIRG)
+array.push(TICKERS, TICKER_MOLA)
+array.push(TICKERS, TICKER_SEMI)
+array.push(TICKERS, TICKER_MOLI)
+array.push(TICKERS, TICKER_MORI)
+array.push(TICKERS, TICKER_GBAN)
+array.push(TICKERS, TICKER_NCON)
+array.push(TICKERS, TICKER_OVOP)
+array.push(TICKERS, TICKER_PAMP)
+array.push(TICKERS, TICKER_PREN1)
+array.push(TICKERS, TICKER_PATR)
+array.push(TICKERS, TICKER_POLL)
+array.push(TICKERS, TICKER_RIGO)
+array.push(TICKERS, TICKER_SAMI)
+array.push(TICKERS, TICKER_COME)
+array.push(TICKERS, TICKER_TECO2)
+array.push(TICKERS, TICKER_TXAR)
+array.push(TICKERS, TICKER_TGNO4)
+array.push(TICKERS, TICKER_TGSU2)
+array.push(TICKERS, TICKER_YPFD)
+
+const string PATTERN_DOJI_STAR = "Estrella Doji"
+const string PATTERN_DRAGONFLY_DOJI = "Doji libélula"
+const string PATTERN_LONGLEGGED_DOJI = "Doji de piernas largas"
+const string PATTERN_GRAVESTONE_DOJI = "Doji lápida"
+const string PATTERN_THREE_IDENTICAL_BLACK_CROWS = "Tres cuervos negros idénticos"
+const string PATTERN_ADVANCE_BLOCK = "Parada previa"
+const string PATTERN_DELIBERATION = "reflexión"
+const string PATTERN_UNIQUE_THREE_RIVERS_BOTTOM = "Suelo de tres ríos"
+const string PATTERN_THREE_STARS_IN_THE_SOUTH = "Tres estrellas al sur"
+const string PATTERN_BULLISH_BREAKAWAY = "Escape alcista"
+const string PATTERN_BEARISH_BREAKAWAY = "Escape bajista"
+const string PATTERN_CONCEALING_BABY_SWALLOW = "Bebé oculto"
+const string PATTERN_STICK_SANDWICH = "Stick Sandwich"
+const string PATTERN_MATCHING_LOW = "Mínimos comunes"
+const string PATTERN_LADDER_BOTTOM = "Suelo escalonado"
+const string PATTERN_THRUSTING_LINE = "Línea de avance"
+const string PATTERN_IN_NECK = "Avance in-neck"
+const string PATTERN_ON_NECK = "Avance on-neck"
+const string PATTERN_BULLISH_SEPARATING_LINES = "Líneas de separación alcistas"
+const string PATTERN_BEARISH_SEPARATING_LINES = "Líneas de separación bajistas"
+const string PATTERN_RISING_THREE_METHODS = "Método de tres al alza"
+const string PATTERN_FALLING_THREE_METHODS = "Método de tres a la baja"
+const string PATTERN_HAMMER = "Martillo"
+const string PATTERN_INVERTED_HAMMER = "Martillo invertido"
+const string PATTERN_HANGING_MAN = "Ahorcado"
+const string PATTERN_SHOOTING_STAR = "Estrella Fugaz"
+const string PATTERN_BULLISH_BELT_HOLD_LINE = "Presa de cinturón alcista"
+const string PATTERN_BEARISH_BELT_HOLD_LINE  = "Presa de cinturón bajista"
+const string PATTERN_BULLISH_ENGULFING = "Envolvente alcista"
+const string PATTERN_BEARISH_ENGULFING = "Envolvente bajista"
+const string PATTERN_BULLISH_HARAMI = "Harami alcista"
+const string PATTERN_BEARISH_HARAMI = "Harami bajista"
+const string PATTERN_HOMING_PIGEON = "Paloma mensajera"
+const string PATTERN_BULLISH_COUNTER_ATTACK_LINE = "Línea de contraataque alcista"
+const string PATTERN_BEARISH_COUNTER_ATTACK_LINE = "Línea de contraataque bajista"
+const string PATTERN_THREE_WHITE_SOLDIERS = "Tres soldados blancos"
+const string PATTERN_THREE_BLACK_CROWS = "Tres cuervos negros"
+const string PATTERN_MAT_HOLD_BULLISH = "Presa de suelo alcista"
+const string PATTERN_BULLISH_THREE_LINE_STRIKE = "Triple strike alcista"
+const string PATTERN_BEARISH_THREE_LINE_STRIKE = "Triple strike bajista"
+const string PATTERN_BULLISH_DOJI_STAR = "Estrella Doji alcista"
+const string PATTERN_BEARISH_DOJI_STAR = "Estrella Doji bajista"
+const string PATTERN_MORNING_STAR = "Estrella del amanecer"
+const string PATTERN_EVENING_STAR = "Estrella del atardecer"
+const string PATTERN_MORNING_DOJI_STAR = "Estrella Doji del amanecer"
+const string PATTERN_EVENING_DOJI_STAR = "Estrella Doji del atardecer"
+const string PATTERN_BULLISH_ABANDONED_BABY = "Bebé abandonado alcista"
+const string PATTERN_BEARISH_ABANDONED_BABY = "Bebé abandonado bajista"
+const string PATTERN_BULLISH_TRI_STAR = "Triple estrella alcista"
+const string PATTERN_BEARISH_TRI_STAR = "Triple estrella bajista"
+const string PATTERN_UPSIDE_GAP_TWO_CROWS = "Dos cuervos en hueco alcista"
+const string PATTERN_TWO_CROWS = "Dos cuervos"
+const string PATTERN_UPSIDE_TASUKI_GAP = "Hueco alcista Tasuki"
+const string PATTERN_DOWNSIDE_TASUKI_GAP = "Hueco bajista Tasuki"
+const string PATTER_UPSIDE_GAP_THREE_METHODS = "Hueco alcista en método de tres"
+const string PATTERN_DOWNSIDE_GAP_THREE_METHODS = "Hueco bajista en método de tres"
+const string PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco alcista con velas blancas alineadas"
+const string PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco bajista con velas blancas alineadas"
+const string PATTER_BULLISH_KICKING = "Golpe alcista"
+const string PATTER_BEARISH_KICKING = "Golpe bajista"
+
+const color COLOR_LIGHT_GREEN = color.rgb(189, 236, 182)
+const color COLOR_DARK_GREEN = color.rgb(0, 255, 0)
+const color COLOR_TRANSPARENT_GREEN = color.rgb(0, 255, 0, 90)
+const color COLOR_LIGHT_RED = color.rgb(242,186,201,0)
+const color COLOR_DARK_RED = color.rgb(255, 0, 0)
+const color COLOR_TRANSPARENT_RED = color.rgb(255, 0, 0, 90)
+const color COLOR_DARK_PURPLE = color.rgb(160, 32, 240)
+const color COLOR_LIGHT_PURPLE = color.rgb(238, 130, 238)
+const color COLOR_DARK_BLUE = color.rgb(0, 0, 255)
+const color COLOR_TRANSPARENT_BLUE = color.new(color.blue, 90)
+const color COLOR_FLUORESCENT_BLUE =color.rgb(21, 244, 238)
+const color COLOR_YELLOW = color.new(color.yellow, 0)
+
+export getTickerTRAN() => TICKER_TRAN
+export getTickerBBAR() => TICKER_BBAR
+export getTickerBHIP() => TICKER_BHIP
+export getTickerBMA() => TICKER_BMA
+export getTickerBPAT() => TICKER_BPAT
+export getTickerGGAL() => TICKER_GGAL
+export getTickerSUPV() => TICKER_SUPV
+export getTickerVALO() => TICKER_VALO
+export getTickerAGRO() => TICKER_AGRO
+export getTickerALUA() => TICKER_ALUA
+export getTickerAUSO() => TICKER_AUSO
+export getTickerGAMI() => TICKER_GAMI
+export getTickerBOLT() => TICKER_BOLT
+export getTickerBYMA() => TICKER_BYMA
+export getTickerCVH() => TICKER_CVH
+export getTickerCGPA2() => TICKER_CGPA2
+export getTickerCAPX() => TICKER_CAPX
+export getTickerCARC() => TICKER_CARC
+export getTickerCADO() => TICKER_CADO
+export getTickerCELU() => TICKER_CELU
+export getTickerCECO2() => TICKER_CECO2
+export getTickerCEPU2() => TICKER_CEPU2
+export getTickerURBA() => TICKER_URBA
+export getTickerCOMO() => TICKER_COMO
+export getTickerINTR() => TICKER_INTR
+export getTickerCTIO() => TICKER_CTIO
+export getTickerCOUR() => TICKER_COUR
+export getTickerCRES() => TICKER_CRES
+export getTickerDGCU2() => TICKER_DGCU2
+export getTickerDGCE() => TICKER_DGCE
+export getTickerDOME() => TICKER_DOME
+export getTickerDYCA() => TICKER_DYCA
+export getTickerEDSH() => TICKER_EDSH
+export getTickerEDLH() => TICKER_EDLH
+export getTickerEMAC() => TICKER_EMAC
+export getTickerEDN() => TICKER_EDN
+export getTickerDSUR() => TICKER_DSUR
+export getTickerFERR() => TICKER_FERR
+export getTickerFIPL() => TICKER_FIPL
+export getTickerREGE() => TICKER_REGE
+export getTickerGARO() => TICKER_GARO
+export getTickerGCDI() => TICKER_GCDI
+export getTickerGRIM() => TICKER_GRIM
+export getTickerGCLA() => TICKER_GCLA
+export getTickerOEST() => TICKER_OEST
+export getTickerHAVA() => TICKER_HAVA
+export getTickerHARG() => TICKER_HARG
+export getTickerHSAT() => TICKER_HSAT
+export getTickerHULI() => TICKER_HULI
+export getTickerPATA() => TICKER_PATA
+export getTickerROSE() => TICKER_ROSE
+export getTickerINAG() => TICKER_INAG
+export getTickerIEBA() => TICKER_IEBA
+export getTickerINVJ() => TICKER_INVJ
+export getTickerIRSA() => TICKER_IRSA
+export getTickerRICH() => TICKER_RICH
+export getTickerLEDE() => TICKER_LEDE
+export getTickerLOMA() => TICKER_LOMA
+export getTickerLONG() => TICKER_LONG
+export getTickerMTR() => TICKER_MTR
+export getTickerMETR() => TICKER_METR
+export getTickerMIRG() => TICKER_MIRG
+export getTickerMOLA() => TICKER_MOLA
+export getTickerSEMI() => TICKER_SEMI
+export getTickerMOLI() => TICKER_MOLI
+export getTickerMORI() => TICKER_MORI
+export getTickerGBAN() => TICKER_GBAN
+export getTickerNCON() => TICKER_NCON
+export getTickerOVOP() => TICKER_OVOP
+export getTickerPAMP() => TICKER_PAMP
+export getTickerPREN1() => TICKER_PREN1
+export getTickerPATR() => TICKER_PATR
+export getTickerPOLL() => TICKER_POLL
+export getTickerRIGO() => TICKER_RIGO
+export getTickerSAMI() => TICKER_SAMI
+export getTickerCOME() => TICKER_COME
+export getTickerTECO2() => TICKER_TECO2
+export getTickerTXAR() => TICKER_TXAR
+export getTickerTGNO4() => TICKER_TGNO4
+export getTickerTGSU2() => TICKER_TGSU2
+export getTickerYPFD() => TICKER_YPFD
+
+// export getTickers() => TICKERS
+
+export getTickerNYSEMMM() => TICKER_NYSE_MMM
+export getTickerNYSEABT() => TICKER_NYSE_ABT
+export getTickerNYSEABBV() => TICKER_NYSE_ABBV
+export getTickerNYSEANF() => TICKER_NYSE_ANF
+export getTickerNYSEACN() => TICKER_NYSE_ACN
+export getTickerNYSEADGO() => TICKER_NYSE_ADGO
+export getTickerXETRAADS() => TICKER_XETRA_ADS
+export getTickerNASDAQADBE() => TICKER_NASDAQ_ADBE
+export getTickerNYSEJMIA() => TICKER_NYSE_JMIA
+export getTickerNYSEAAP() => TICKER_NYSE_AAP
+export getTickerNASDAQAMD() => TICKER_NASDAQ_AMD
+export getTickerNYSEAEG() => TICKER_NYSE_AEG
+export getTickerNYSEAEM() => TICKER_NYSE_AEM
+export getTickerNASDAQGSABNB() => TICKER_NASDAQ_GS_ABNB
+export getTickerNYSEBABA() => TICKER_NYSE_BABA
+export getTickerNASDAQGOOGLE() => TICKER_NASDAQ_GOOGLE
+export getTickerNASDAQAABA() => TICKER_NASDAQ_AABA
+export getTickerNYSEMO() => TICKER_NYSE_MO
+export getTickerNYSEAOCA() => TICKER_NYSE_AOCA
+export getTickerNYSEAMZN() => TICKER_NYSE_AMZN
+export getTickerNASDAQABEV() => TICKER_NASDAQ_ABEV
+export getTickerNYSEAMX() => TICKER_NYSE_AMX
+export getTickerNASDAQAAL() => TICKER_NASDAQ_AAL
+export getTickerNYSEAXP() => TICKER_NYSE_AXP
+export getTickerNYSEAIG() => TICKER_NYSE_AIG
+export getTickerNASDAQAMGN() => TICKER_NASDAQ_AMGN
+export getTickerNASDAQADI() => TICKER_NASDAQ_ADI
+export getTickerNASDAQAAPL() => TICKER_NASDAQ_AAPL
+export getTickerNASDAQAMAT() => TICKER_NASDAQ_AMAT
+export getTickerNYSEARCO() => TICKER_NYSE_ARCO
+export getTickerNYSEARKK() => TICKER_NYSE_ARKK
+export getTickerNYSEAZN() => TICKER_NYSE_AZN
+export getTickerNYSET() => TICKER_NYSE_T
+export getTickerNASDAQADP() => TICKER_NASDAQ_ADP
+export getTickerNYSEAVY() => TICKER_NYSE_AVY
+export getTickerNASDAQCAR() => TICKER_NASDAQ_CAR
+export getTickerNASDAQBIDU() => TICKER_NASDAQ_BIDU
+export getTickerNYSEBBD() => TICKER_NYSE_BBD
+export getTickerNYSEBSBR() => TICKER_NYSE_BSBR
+export getTickerNYSESAN() => TICKER_NYSE_SAN
+export getTickerNYSEBAC() => TICKER_NYSE_BA_C
+export getTickerNYSEBCS() => TICKER_NYSE_BCS
+export getTickerNYSEGOLD() => TICKER_NYSE_GOLD
+export getTickerFRANKFURT() => TICKER_FRANKFURT_BAS
+export getTickerFRANKFURTBAYN() => TICKER_FRANKFURT_BAYN
+export getTickerNYSEBRKB() => TICKER_NYSE_BRKB
+export getTickerNYSEBHP() => TICKER_NYSE_BHP
+export getTickerNYSEBBV() => TICKER_NYSE_BBV
+export getTickerNYSEBIOX() => TICKER_NYSE_BIOX
+export getTickerNASDAQBIIB() => TICKER_NASDAQ_BIIB
+export getTickerNASDAQGM() => TICKER_NASDAQ_GM_BITF
+export getTickerNASDAQBB() => TICKER_NASDAQ_BB
+export getTickerNASDAQBKNG() => TICKER_NASDAQ_BKNG
+export getTickerNYSEBP() => TICKER_NYSE_BP
+export getTickerNYSELND() => TICKER_NYSE_LND
+export getTickerNYSEBAK() => TICKER_NYSE_BAK
+export getTickerNYSEBRFS() => TICKER_NYSE_BRFS
+export getTickerNYSEBMY() => TICKER_NYSE_BMY
+export getTickerNASDAQAVGO() => TICKER_NASDAQ_AVGO
+export getTickerNYSEBNG() => TICKER_NYSE_BNG
+export getTickerNYSECAJ() => TICKER_NYSE_CAJ
+export getTickerNYSECAH() => TICKER_NYSE_CAH
+export getTickerNYSECCL() => TICKER_NYSE_CCL
+export getTickerNYSECAT() => TICKER_NYSE_CAT
+export getTickerNYSECX() => TICKER_NYSE_CX
+export getTickerNYSEEBR() => TICKER_NYSE_EBR
+export getTickerNYESCHW() => TICKER_NYSE_SCHW
+export getTickerNYSECVX() => TICKER_NYSE_CVX
+export getTickerNYSELFC() => TICKER_NYSE_LFC
+export getTickerNYSESNP() => TICKER_NYSE_SNP
+export getTickerNASDAQCSCO() => TICKER_NASDAQ_CSCO
+export getTickerNYSEC() => TICKER_NYSE_C
+export getTickerNYSEKOFM() => TICKER_NYSE_KOFM
+export getTickerNYSECDE() => TICKER_NYSE_CDE
+export getTickerNASDAQCOIN() => TICKER_NASDAQ_COIN
+export getTickerNYSECL() => TICKER_NYSE_CL
+
+export getPatternDojiStar() => PATTERN_DOJI_STAR
+export getPatternDragonflyDoji() => PATTERN_DRAGONFLY_DOJI
+export getPatternLongleggedDoji() => PATTERN_LONGLEGGED_DOJI
+export getPatternGravestoneDoji() => PATTERN_GRAVESTONE_DOJI
+export getPatternThreeIdenticalBlackCrows() => PATTERN_THREE_IDENTICAL_BLACK_CROWS
+export getPatternAdvanceBlock() => PATTERN_ADVANCE_BLOCK
+export getPatternDeliberation() => PATTERN_DELIBERATION
+export getPatternUniqueThreeRiversBottom() => PATTERN_UNIQUE_THREE_RIVERS_BOTTOM
+export getPatternThreeStarsInSouth() => PATTERN_THREE_STARS_IN_THE_SOUTH
+export getPatternBullishBreakaway() => PATTERN_BULLISH_BREAKAWAY
+export getPatternBearishBreakaway() => PATTERN_BEARISH_BREAKAWAY
+export getPatternConcealingBabySwallow() => PATTERN_CONCEALING_BABY_SWALLOW
+export getPatternStickSandwich() => PATTERN_STICK_SANDWICH
+export getPatternMatchingLow() => PATTERN_MATCHING_LOW
+export getPatternLadderBottom() => PATTERN_LADDER_BOTTOM
+export getPatternThrustingLine() => PATTERN_THRUSTING_LINE
+export getPatternInNeck() => PATTERN_IN_NECK
+export getPatternOnNeck() => PATTERN_ON_NECK
+export getPatternBullishSeparatingLines() => PATTERN_BULLISH_SEPARATING_LINES
+export getPatternBearishSeparatingLines() => PATTERN_BEARISH_SEPARATING_LINES
+export getPatternRisingThreeMethods() => PATTERN_RISING_THREE_METHODS
+export getPatternFallingThreeMethods() => PATTERN_FALLING_THREE_METHODS
+export getPatternHammer() => PATTERN_HAMMER
+export getPatternInvertedHammer() => PATTERN_INVERTED_HAMMER
+export getPatternHangingMan() => PATTERN_HANGING_MAN
+export getPatternShootingStar() => PATTERN_SHOOTING_STAR
+export getPatternBullishBeltHoldLine() => PATTERN_BULLISH_BELT_HOLD_LINE
+export getPatternBearishBeltHoldLine() => PATTERN_BEARISH_BELT_HOLD_LINE
+export getPatternBullishEngulfing() => PATTERN_BULLISH_ENGULFING
+export getPatternBearishEngulfing() => PATTERN_BEARISH_ENGULFING
+export getPatternBullishHarami() => PATTERN_BULLISH_HARAMI
+export getPatternBearishHarami() => PATTERN_BEARISH_HARAMI
+export getPatternHomingPigeon() => PATTERN_HOMING_PIGEON
+export getPatternBullishCounterAttackLine() => PATTERN_BULLISH_COUNTER_ATTACK_LINE
+export getPatternBearishCounterAttackLine() => PATTERN_BEARISH_COUNTER_ATTACK_LINE
+export getPatternThreeWhiteSoldiers() => PATTERN_THREE_WHITE_SOLDIERS
+export getPatternThreeBlackCrows() => PATTERN_THREE_BLACK_CROWS
+export getPatternMatHoldBullish() => PATTERN_MAT_HOLD_BULLISH
+export getPatternBullishThreeLineStrike() => PATTERN_BULLISH_THREE_LINE_STRIKE
+export getPatternBearishThreeLineStrike() => PATTERN_BEARISH_THREE_LINE_STRIKE
+export getPatternBullishDojiStar() => PATTERN_BULLISH_DOJI_STAR
+export getPatternBearishDojiStar() => PATTERN_BEARISH_DOJI_STAR
+export getPatternMorningStar() => PATTERN_MORNING_STAR
+export getPatternEveningStar() => PATTERN_EVENING_STAR
+export getPatternMorningDojiStar() => PATTERN_MORNING_DOJI_STAR
+export getPatternEveningDojiStar() => PATTERN_EVENING_DOJI_STAR
+export getPatternBullishAbandonedBaby() => PATTERN_BULLISH_ABANDONED_BABY
+export getPatternBearishAbandonedBaby() => PATTERN_BEARISH_ABANDONED_BABY
+export getPatternBullishTriStar() => PATTERN_BULLISH_TRI_STAR
+export getPatternBearishTriStar() => PATTERN_BEARISH_TRI_STAR
+export getPatternUpsideGapTwoCrows() => PATTERN_UPSIDE_GAP_TWO_CROWS
+export getPatternTwoCrows() => PATTERN_TWO_CROWS
+export getPatternUpsideTasukiGap() => PATTERN_UPSIDE_TASUKI_GAP
+export getPatternDownsideTasukiGap() => PATTERN_DOWNSIDE_TASUKI_GAP
+export getPatternUpsideGapThreeMethods() => PATTER_UPSIDE_GAP_THREE_METHODS
+export getPatternDownsideGapThreeMethods() => PATTERN_DOWNSIDE_GAP_THREE_METHODS
+export getPatternUpsideGappingSideBySideWhiteLines() => PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES
+export getPatternDownsideGappingSideBySideWhiteLines() => PATTER_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES
+export getPatternBullishKicking() => PATTER_BULLISH_KICKING
+export getPatternBearishKicking() => PATTER_BEARISH_KICKING
+
+export getColorLightGreen() => COLOR_LIGHT_GREEN
+export getColorDarkGreen() => COLOR_DARK_GREEN
+export getColorTransparentGreen() => COLOR_TRANSPARENT_GREEN
+export getColorLightRed() => COLOR_LIGHT_RED
+export getColorDarkRed() => COLOR_DARK_RED
+export getColorTransparentRed() => COLOR_TRANSPARENT_RED
+export getColorLightPurple() => COLOR_LIGHT_PURPLE
+export getColorDarkPurple() => COLOR_DARK_PURPLE
+export getColorDarkBlue() => COLOR_DARK_BLUE
+export getColorTransparentBlue() => COLOR_TRANSPARENT_BLUE
+export getColorFluorescentBlue() => COLOR_FLUORESCENT_BLUE
+export getColorYellow() => COLOR_YELLOW
+
