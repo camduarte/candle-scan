@@ -1,0 +1,471 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © cdu4rte
+
+//@version=5
+indicator(title = "Herramientas", overlay = true)
+
+import cdu4rte/camdPattern/48
+import cdu4rte/camdCONST/16
+import cdu4rte/camdPivotPoints/2
+import cdu4rte/pattern_name/1
+import cdu4rte/cedears_programs/5
+import cdu4rte/beta/4
+
+const string PATTERN_DOJI_STAR = "Estrella Doji"
+const string PATTERN_DRAGONFLY_DOJI = "Doji libélula"
+const string PATTERN_LONGLEGGED_DOJI = "Doji de piernas largas"
+const string PATTERN_GRAVESTONE_DOJI = "Doji lápida"
+const string PATTERN_LARGE_BULLISH_CANDLESTICK = "Vela grande alcista"
+const string PATTERN_LARGE_BEARISH_CANDLESTICK = "Vela grande bajista"
+const string PATTERN_BULLISH_MARUBOZU = "Marubozu alcista"
+const string PATTERN_BEARISH_MARUBOZU = "Marubozu bajista"
+const string PATTERN_SPINNING_TOP = "Peonza"
+const string PATTERN_SHAVEN_HEAD = "Cabeza rapada"
+const string PATTERN_SHAVEN_BOTTOM = "Trasero afeitado"
+const string PATTERN_HIGH_WAVE_CANDLE = "Onda larga"
+const string PATTERN_THREE_IDENTICAL_BLACK_CROWS = "Tres cuervos negros idénticos"
+const string PATTERN_ADVANCE_BLOCK = "Parada previa"
+const string PATTERN_DELIBERATION = "reflexión"
+const string PATTERN_UNIQUE_THREE_RIVERS_BOTTOM = "Suelo de tres ríos"
+const string PATTERN_THREE_STARS_IN_THE_SOUTH = "Tres estrellas al sur"
+const string PATTERN_BULLISH_BREAKAWAY = "Escape alcista"
+const string PATTERN_BEARISH_BREAKAWAY = "Escape bajista"
+const string PATTERN_CONCEALING_BABY_SWALLOW = "Bebé oculto"
+const string PATTERN_STICK_SANDWICH = "Stick Sandwich"
+const string PATTERN_MATCHING_LOW = "Mínimos comunes"
+const string PATTERN_LADDER_BOTTOM = "Suelo escalonado"
+const string PATTERN_THRUSTING_LINE = "Línea de avance"
+const string PATTERN_IN_NECK = "Avance in-neck"
+const string PATTERN_ON_NECK = "Avance on-neck"
+const string PATTERN_BULLISH_SEPARATING_LINES = "Líneas de separación alcistas"
+const string PATTERN_BEARISH_SEPARATING_LINES = "Líneas de separación bajistas"
+const string PATTERN_RISING_THREE_METHODS = "Método de tres al alza"
+const string PATTERN_FALLING_THREE_METHODS = "Método de tres a la baja"
+const string PATTERN_HAMMER = "Martillo"
+const string PATTERN_INVERTED_HAMMER = "Martillo invertido"
+const string PATTERN_HANGING_MAN = "Ahorcado"
+const string PATTERN_SHOOTING_STAR = "Estrella Fugaz"
+const string PATTERN_BULLISH_BELT_HOLD_LINE = "Presa de cinturón alcista"
+const string PATTERN_BEARISH_BELT_HOLD_LINE  = "Presa de cinturón bajista"
+const string PATTERN_BULLISH_ENGULFING = "Envolvente alcista"
+const string PATTERN_BEARISH_ENGULFING = "Envolvente bajista"
+const string PATTERN_BULLISH_HARAMI = "Harami alcista"
+const string PATTERN_BEARISH_HARAMI = "Harami bajista"
+const string PATTERN_HOMING_PIGEON = "Paloma mensajera"
+const string PATTERN_BULLISH_COUNTER_ATTACK_LINE = "Línea de contraataque alcista"
+const string PATTERN_BEARISH_COUNTER_ATTACK_LINE = "Línea de contraataque bajista"
+const string PATTERN_THREE_WHITE_SOLDIERS = "Tres soldados blancos"
+const string PATTERN_THREE_BLACK_CROWS = "Tres cuervos negros"
+const string PATTERN_MAT_HOLD_BULLISH = "Presa de suelo alcista"
+const string PATTERN_BULLISH_THREE_LINE_STRIKE = "Triple strike alcista"
+const string PATTERN_BEARISH_THREE_LINE_STRIKE = "Triple strike bajista"
+const string PATTERN_BULLISH_DOJI_STAR = "Estrella Doji alcista"
+const string PATTERN_BEARISH_DOJI_STAR = "Estrella Doji bajista"
+const string PATTERN_MORNING_STAR = "Estrella del amanecer"
+const string PATTERN_EVENING_STAR = "Estrella del atardecer"
+const string PATTERN_MORNING_DOJI_STAR = "Estrella Doji del amanecer"
+const string PATTERN_EVENING_DOJI_STAR = "Estrella Doji del atardecer"
+const string PATTERN_BULLISH_ABANDONED_BABY = "Bebé abandonado alcista"
+const string PATTERN_BEARISH_ABANDONED_BABY = "Bebé abandonado bajista"
+const string PATTERN_BULLISH_TRI_STAR = "Triple estrella alcista"
+const string PATTERN_BEARISH_TRI_STAR = "Triple estrella bajista"
+const string PATTERN_UPSIDE_GAP_TWO_CROWS = "Dos cuervos en hueco alcista"
+const string PATTERN_TWO_CROWS = "Dos cuervos"
+const string PATTERN_UPSIDE_TASUKI_GAP = "Hueco alcista Tasuki"
+const string PATTERN_DOWNSIDE_TASUKI_GAP = "Hueco bajista Tasuki"
+const string PATTERN_UPSIDE_GAP_THREE_METHODS = "Hueco alcista en método de tres"
+const string PATTERN_DOWNSIDE_GAP_THREE_METHODS = "Hueco bajista en método de tres"
+const string PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco alcista con velas blancas alineadas"
+const string PATTERN_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES = "Hueco bajista con velas blancas alineadas"
+const string PATTERN_BULLISH_KICKING = "Golpe alcista"
+const string PATTERN_BEARISH_KICKING = "Golpe bajista"
+
+const string MA_GROUP = "Media Móvil"
+const string PATTERN_GROUP = "Patrón"
+const string PIVOT_POINT_GROUP = "Puntos de inflexión"
+const string VOLUME_GROUP =  "Volumen"
+const string TABLE_GRUP = "Tabla"
+
+// Parámetro de entrada para habilitar/deshabilitar funcionalidades desde el entorno gráfico
+bool shwoMA = input(defval = true, title = "Mostrar medias móviles", group = MA_GROUP)
+bool shwoWMA21 = input(defval = true, title = "WMA 21", group = MA_GROUP)
+bool showSMA30 = input(defval = true, title = "SMA 30", group = MA_GROUP)
+bool showEMA50 = input(defval = false, title = "EMA 50", group = MA_GROUP)
+bool showEMA150 = input(defval = true, title = "EMA 150", group = MA_GROUP)
+bool showSMA200 = input(defval = true, title = "SMA 200", group = MA_GROUP)
+
+bool show_country = input.bool(defval = true, title = "Mostrar", group = TABLE_GRUP)
+string benchmark = input.symbol(defval = "SP:SPX", title = "Índice", group = TABLE_GRUP)
+bool showVolume = input(defval = false, title = "Volumen", group = VOLUME_GROUP)
+
+const string lengthGroupTitle = "LENGTH LEFT / RIGHT"
+const string colorGroupTitle = "Text Color / Label Color"
+bool shwoPivotPoint = input(defval = false, title = "Mostrar puntos de inflexión", group = PIVOT_POINT_GROUP)
+int leftLenH = input.int(title = "Pivot High", defval = 10, minval = 1, inline = "Pivot High", group = lengthGroupTitle)
+int rightLenH = input.int(title = "/", defval = 10, minval = 1, inline = "Pivot High", group = lengthGroupTitle)
+color textColorH = input(title = "Pivot High", defval = color.black, inline = "Pivot High", group = colorGroupTitle)
+color labelColorH = input(title = "", defval = color.white, inline = "Pivot High", group = colorGroupTitle)
+int leftLenL = input.int(title = "Pivot Low", defval = 10, minval = 1, inline = "Pivot Low", group = lengthGroupTitle)
+int rightLenL = input.int(title = "/", defval = 10, minval = 1, inline = "Pivot Low", group = lengthGroupTitle)
+color textColorL = input(title = "Pivot Low", defval = color.black, inline = "Pivot Low", group = colorGroupTitle)
+color labelColorL = input(title = "", defval = color.white, inline = "Pivot Low", group = colorGroupTitle)
+
+bool showPattern = input(defval = false, title = "Mostrar patrones", group = PATTERN_GROUP)
+bool showBullishPattern = input(defval = true, title = "Mostrar patrones alcistas", group = PATTERN_GROUP)
+bool showBearishPattern = input(defval = true, title = "Mostrar patrones bajistas", group = PATTERN_GROUP)
+bool showDojiStar = input(defval = false, title = PATTERN_DOJI_STAR, group = PATTERN_GROUP)
+bool showDragonflyDoji = input(defval = false, title = PATTERN_DRAGONFLY_DOJI, group = PATTERN_GROUP)
+bool showLongLeggedDoji = input(defval = false, title = PATTERN_LONGLEGGED_DOJI, group = PATTERN_GROUP)
+bool showGravestoneDoji = input(defval = false, title = PATTERN_GRAVESTONE_DOJI, group = PATTERN_GROUP)
+bool showLargeBullishCandlestickPattern = input(defval = true, title = PATTERN_LARGE_BULLISH_CANDLESTICK, group = PATTERN_GROUP)
+bool showLargeBearishCandlestickPattern = input(defval = true, title = PATTERN_LARGE_BEARISH_CANDLESTICK, group = PATTERN_GROUP)
+bool showBullishMarubozuPattern = input(defval = true, title = PATTERN_BULLISH_MARUBOZU, group = PATTERN_GROUP)
+bool showBearishMarubozuPattern = input(defval = true, title = PATTERN_BEARISH_MARUBOZU, group = PATTERN_GROUP)
+bool showSpinningTopPattern = input(defval = false, title = PATTERN_SPINNING_TOP, group = PATTERN_GROUP)
+bool showShavenHeadPattern = input(defval = true, title = PATTERN_SHAVEN_HEAD, group = PATTERN_GROUP)
+bool showShavenBottomPattern = input(defval = true, title = PATTERN_SHAVEN_BOTTOM, group = PATTERN_GROUP)
+bool showHighWaveCandlePattern = input(defval = false, title = PATTERN_HIGH_WAVE_CANDLE, group = PATTERN_GROUP)
+bool showHammer = input(defval = true, title = PATTERN_HAMMER, group = PATTERN_GROUP)
+bool showThreeIdenticalBlackCrows = input(defval = true, title = PATTERN_THREE_IDENTICAL_BLACK_CROWS, group = PATTERN_GROUP)
+bool showAdvanceBlock = input(defval = true, title = PATTERN_ADVANCE_BLOCK, group = PATTERN_GROUP)
+bool showDeliberation = input(defval = true, title = PATTERN_DELIBERATION, group = PATTERN_GROUP)
+bool showUniqueThreeRiversBottom = input(defval = true, title = PATTERN_UNIQUE_THREE_RIVERS_BOTTOM, group = PATTERN_GROUP)
+bool showThreeStarsInTheSouth = input(defval = true, title = PATTERN_THREE_STARS_IN_THE_SOUTH, group = PATTERN_GROUP)
+bool showBullishBreakaway = input(defval = true, title = PATTERN_BULLISH_BREAKAWAY, group = PATTERN_GROUP)
+bool showBearishBreakaway = input(defval = true, title = PATTERN_BEARISH_BREAKAWAY, group = PATTERN_GROUP)
+bool showConcealingBabySwallow = input(defval = true, title = PATTERN_CONCEALING_BABY_SWALLOW, group = PATTERN_GROUP)
+bool showStickSandwich = input(defval = true, title = PATTERN_STICK_SANDWICH, group = PATTERN_GROUP)
+bool showMatchingLow = input(defval = true, title = PATTERN_MATCHING_LOW, group = PATTERN_GROUP)
+bool showLadderBottom = input(defval = true, title = PATTERN_LADDER_BOTTOM, group = PATTERN_GROUP)
+bool showThrustingLine = input(defval = true, title = PATTERN_THRUSTING_LINE, group = PATTERN_GROUP)
+bool showInNeck = input(defval = true, title = PATTERN_IN_NECK, group = PATTERN_GROUP)
+bool showOnNeck = input(defval = true, title = PATTERN_ON_NECK, group = PATTERN_GROUP)
+bool showBullishSeparatingLines = input(defval = true, title = PATTERN_BULLISH_SEPARATING_LINES, group = PATTERN_GROUP)
+bool showBearishSeparatingLines = input(defval = true, title = PATTERN_BEARISH_SEPARATING_LINES, group = PATTERN_GROUP)
+bool showRisingThreeMethods = input(defval = true, title = PATTERN_RISING_THREE_METHODS, group = PATTERN_GROUP)
+bool showFallingThreeMethods = input(defval = true, title = PATTERN_FALLING_THREE_METHODS, group = PATTERN_GROUP)
+bool showInvertedHammer = input(defval = true, title = PATTERN_INVERTED_HAMMER, group = PATTERN_GROUP)
+bool showHangingMan = input(defval = true, title = PATTERN_HANGING_MAN, group = PATTERN_GROUP)
+bool showShootingStar = input(defval = true, title = PATTERN_SHOOTING_STAR, group = PATTERN_GROUP)
+bool showBullishBeltHoldLine = input(defval = true, title = PATTERN_BULLISH_BELT_HOLD_LINE, group = PATTERN_GROUP)
+bool showBearishBeltHoldLine = input(defval = true, title = PATTERN_BEARISH_BELT_HOLD_LINE, group = PATTERN_GROUP)
+bool showBullishEngulfing = input(defval = true, title = PATTERN_BULLISH_ENGULFING, group = PATTERN_GROUP)
+bool showBearishEngulfing = input(defval = true, title = PATTERN_BEARISH_ENGULFING, group = PATTERN_GROUP)
+bool showBullishHarami = input(defval = true, title = PATTERN_BULLISH_HARAMI, group = PATTERN_GROUP)
+bool showBearishHarami = input(defval = true, title = PATTERN_BEARISH_HARAMI, group = PATTERN_GROUP)
+bool showHomingPigeon = input(defval = true, title = PATTERN_HOMING_PIGEON, group = PATTERN_GROUP)
+bool showBullishCounterAttackLine = input(defval = true, title = PATTERN_BULLISH_COUNTER_ATTACK_LINE, group = PATTERN_GROUP)
+bool showBearishCounterAttackLine = input(defval = true, title = PATTERN_BEARISH_COUNTER_ATTACK_LINE, group = PATTERN_GROUP)
+bool showThreeWhiteSoldiers = input(defval = true, title = PATTERN_THREE_WHITE_SOLDIERS, group = PATTERN_GROUP)
+bool showThreeBlackCrows = input(defval = true, title = PATTERN_THREE_BLACK_CROWS, group = PATTERN_GROUP)
+bool showMatHoldBullish = input(defval = true, title = PATTERN_MAT_HOLD_BULLISH, group = PATTERN_GROUP)
+bool showBullishThreeLineStrike = input(defval = true, title = PATTERN_BULLISH_THREE_LINE_STRIKE, group = PATTERN_GROUP)
+bool showBearishThreeLineStrike = input(defval = true, title = PATTERN_BEARISH_THREE_LINE_STRIKE, group = PATTERN_GROUP)
+bool showBullishDojiStar = input(defval = true, title = PATTERN_BULLISH_DOJI_STAR, group = PATTERN_GROUP)
+bool showBearishDojiStar = input(defval = true, title = PATTERN_BEARISH_DOJI_STAR, group = PATTERN_GROUP)
+bool showMorningStar = input(defval = true, title = PATTERN_MORNING_STAR, group = PATTERN_GROUP)
+bool showEveningStar = input(defval = true, title = PATTERN_EVENING_STAR, group = PATTERN_GROUP)
+bool showMorningDojiStar = input(defval = true, title = PATTERN_MORNING_DOJI_STAR, group = PATTERN_GROUP)
+bool showEveningDojiStar = input(defval = true, title = PATTERN_EVENING_DOJI_STAR, group = PATTERN_GROUP)
+bool showBullishAbandonedBaby = input(defval = true, title = PATTERN_BULLISH_ABANDONED_BABY, group = PATTERN_GROUP)
+bool showBearishAbandonedBaby = input(defval = true, title = PATTERN_BEARISH_ABANDONED_BABY, group = PATTERN_GROUP)
+bool showBullishTriStar = input(defval = true, title = PATTERN_BULLISH_TRI_STAR, group = PATTERN_GROUP)
+bool showBearishTriStar = input(defval = true, title = PATTERN_BEARISH_TRI_STAR, group = PATTERN_GROUP)
+bool showUpsideGapTwoCrows = input(defval = true, title = PATTERN_UPSIDE_GAP_TWO_CROWS, group = PATTERN_GROUP)
+bool showTwoCrows = input(defval = true, title = PATTERN_TWO_CROWS, group = PATTERN_GROUP)
+bool showUpsideTasukiGap = input(defval = true, title = PATTERN_UPSIDE_TASUKI_GAP, group = PATTERN_GROUP)
+bool showDownsideTasukiGap = input(defval = true, title = PATTERN_DOWNSIDE_TASUKI_GAP, group = PATTERN_GROUP)
+bool showUpsideGapThreeMethods = input(defval = true, title = PATTERN_UPSIDE_GAP_THREE_METHODS, group = PATTERN_GROUP)
+bool showDownsideGapThreeMethods = input(defval = true, title = PATTERN_DOWNSIDE_GAP_THREE_METHODS, group = PATTERN_GROUP)
+bool showUpsideGappingSideBySideWhiteLines = input(defval = true, title = PATTERN_UPSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, group = PATTERN_GROUP)
+bool showDownsideGappingSideBySideWhiteLines = input(defval = true, title = PATTERN_DOWNSIDE_GAPPING_SIDE_BY_SIDE_WHITE_LINES, group = PATTERN_GROUP)
+bool showBullishKicking = input(defval = true, title = PATTERN_BULLISH_KICKING, group = PATTERN_GROUP)
+bool showBearishKicking = input(defval = true, title = PATTERN_BEARISH_KICKING, group = PATTERN_GROUP)
+
+// Llamada a los patrones.
+bool isDojiStar = camdPattern.isDojiStarPattern(0)
+bool isDragonflyDoji = camdPattern.isDragonflyDojiPattern(0)
+bool isLongleggedDoji = camdPattern.isLongleggedDojiPattern(0)
+bool isGravestoneDoji = camdPattern.isGravestoneDojiPattern(0)
+bool isLargeBullishCandlestick = camdPattern.isLargeBullisCandlestickPattern()
+bool isLargeBearishCandlestick = camdPattern.isLargeBearisCandlestickPattern()
+bool isBullishMarubozu = camdPattern.isBullishMarubozuPattern()
+bool isBearishMarubozu = camdPattern.isBearishMarubozuPattern()
+bool isSpinningTop = camdPattern.isSpinningTopPattern()
+bool isShavenHead = camdPattern.isShavenHeadPattern()
+bool isShavenBottom = camdPattern.isShavenBottomPattern()
+bool isHighWaveCandle = camdPattern.isHighWaveCandlePattern()
+bool isHammer = camdPattern.isHammerPattern()
+bool isInvertedHammer = camdPattern.isInvertedHammerPattern()
+bool isHangingMan = camdPattern.isHangingManPattern()
+bool isShootingStar = camdPattern.isShootingStarPattern()
+bool isBullishBeltHoldLine = camdPattern.isBullishBeltHoldLinePattern()
+bool isBearishBeltHoldLine = camdPattern.isBearishBeltHoldLinePattern()
+bool isBullishEngulfing = camdPattern.isBullishEngulfingPattern()
+bool isBearishEngulfing = camdPattern.isBearishEngulfingPattern()
+bool isBullishHarami = camdPattern.isBullishHaramiPattern()
+bool isBearishHarami = camdPattern.isBearishHaramiPattern()
+bool isHomingPigeon = camdPattern.isHomingPigeonPattern()
+bool isThreeIdenticalBlackCrows = camdPattern.isThreeIdenticalBlackCrowsPattern()
+bool isBullishCounterAttackLine = camdPattern.isBullishCounterAttackLinePattern()
+bool isBearishCounterAttackLine = camdPattern.isBearishCounterAttackLinePattern()
+bool isThreeWhiteSoldiers = camdPattern.isThreeWhiteSoldiersPattern()
+bool isThreeBlackCrows = camdPattern.isThreeBlackCrowsPattern()
+bool isAdvanceBlock = camdPattern.isAdvanceBlockPattern()
+bool isDeliberation = camdPattern.isDeliberationPattern()
+bool isUniqueThreeRiversBottom = camdPattern.isUniqueThreeRiversBottomPattern()
+bool isThreeStarsInTheSouth = camdPattern.isThreeStarsInTheSouthPattern()
+bool isBullishBreakaway = camdPattern.isBullishBreakawayPattern()
+bool isBearishBreakaway = camdPattern.isBearishBreakawayPattern()
+bool isConcealingBabySwallow = camdPattern.isConcealingBabySwallowPattern()
+bool isStickSandwich = camdPattern.isStickSandwichPattern()
+bool isMatchingLow = camdPattern.isMatchingLowPattern()
+bool isLadderBottom = camdPattern.isLadderBottomPattern()
+bool isThrustingLine = camdPattern.isThrustingLinePattern()
+bool isInNeck = camdPattern.isInNeckPatter()
+bool isOnNeck = camdPattern.isOnNeckPatter()
+bool isBullishSeparatingLines = camdPattern.isBullishSeparatingLinesPattern()
+bool isBearishSeparatingLines = camdPattern.isBearishSeparatingLinesPattern()
+bool isRisingThreeMethods = camdPattern.isRisingThreeMethodsPattern()
+bool isFallingThreeMethods = camdPattern.isFallingThreeMethodsPattern()
+bool isMatHoldBullish = camdPattern.isMatHoldBullishPattern()
+bool isBullishThreeLineStrike = camdPattern.isBullishThreeLineStrikePattern()
+bool isBearishThreeLineStrike = camdPattern.isBearishThreeLineStrikePattern()
+bool isBullishDojiStar = camdPattern.isBullishDojiStarPattern()
+bool isBearishDojiStar = camdPattern.isBearishDojiStarPattern()
+bool isMorningStar = camdPattern.isMorningStarPattern()
+bool isEveningStar = camdPattern.isEveningStarPattern()
+bool isMorningDojiStar = camdPattern.isMorningDojiStarPattern()
+bool isEveningDojiStar = camdPattern.isEveningDojiStarPattern()
+bool isBullisAbandonedBaby = camdPattern.isBullishAbandonedBabyPattern()
+bool isBearisAbandonedBaby = camdPattern.isBearishAbandonedBabyPattern()
+bool isBullishTriStar = camdPattern.isBullishTriStarPattern()
+bool isBearishTriStar = camdPattern.isBearishTriStarPattern()
+bool isUpsideGapTwoCrows = camdPattern.isUpsideGapTwoCrowsPattern()
+bool isTwoCrows = camdPattern.isTwoCrowsPattern()
+bool isUpsideTasukiGap = camdPattern.isUpsideTasukiGapPattern()
+bool isDownsideTasukiGap = camdPattern.isDownsideTasukiGapPattern()
+bool isUpsideGapThreeMethods = camdPattern.isUpsideGapThreeMethodsPattern()
+bool isDownsideGapThreeMethods = camdPattern.isDownsideGapThreeMethodsPattern()
+bool isUpsideGappingSideBySideWhiteLines = camdPattern.isUpsideGappingSideBySideWhiteLinesPattern()
+bool isDownsideGappingSideBySideWhiteLines = camdPattern.isDownsideGappingSideBySideWhiteLinesPattern()
+bool isBullishKicking  = camdPattern.isBullishKickingPattern()
+bool isBearishKicking  = camdPattern.isBearishKickingPattern()
+
+//@function Inserta una etiqueta en el gráfico.
+//@param txt El texto de la etiqueta.
+//@param color El color de la etiquita.
+insertLabel(string txt, color col) =>
+    label.new(x = bar_index, y = low, text = txt, style = label.style_text_outline, color = col, size = size.small, yloc = yloc.belowbar)
+
+//@function Inserta una etiqueta en el gráfico.
+//@param txt El texto de la etiqueta.
+//@param color El color de la etiquita.
+//@param labelPos La posición de la etiqueta en el eje y.
+insertLabel(string txt, color col, string labelPos) =>
+    label.new(x = bar_index, y = low, text = txt, style = label.style_text_outline, color = col, size = size.small, yloc = labelPos)
+
+// Agrego etiqueta del patrón a las velas.
+if showPattern
+    if isDojiStar and showDojiStar
+        insertLabel(camdCONST.getPatternDojiStar(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isDragonflyDoji and showDragonflyDoji
+        insertLabel(camdCONST.getPatternDragonflyDoji(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isLongleggedDoji and showLongLeggedDoji
+        insertLabel(camdCONST.getPatternLongleggedDoji(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isGravestoneDoji and showGravestoneDoji
+        insertLabel(camdCONST.getPatternGravestoneDoji(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isLargeBullishCandlestick and showLargeBullishCandlestickPattern and showBullishPattern
+        insertLabel(camdCONST.getPatternLargeBullishCandlestick(), camdCONST.getColorLightGreen())
+    if isLargeBearishCandlestick and showLargeBearishCandlestickPattern and showBearishPattern
+        insertLabel(camdCONST.getPatternLargeBearishCandlestick(), camdCONST.getColorLightRed())
+    if isBullishMarubozu and showBullishMarubozuPattern and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishMarubozu(), camdCONST.getColorLightGreen())
+    if isBearishMarubozu and showBearishMarubozuPattern and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishMarubozu(), camdCONST.getColorLightRed())
+    if isSpinningTop and showSpinningTopPattern
+        insertLabel(camdCONST.getPatternSpinningTop(), camdCONST.getColorYellow(), yloc.abovebar)    
+    if isShavenHead and showShavenHeadPattern
+        insertLabel(camdCONST.getPatternShavenHead(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isShavenBottom and showShavenBottomPattern
+        insertLabel(camdCONST.getPatternShavenBottom(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isHighWaveCandle and showHighWaveCandlePattern
+        insertLabel(camdCONST.getPatternHighWaveCandle(), camdCONST.getColorYellow(), yloc.abovebar)
+    if isHammer and showHammer and showBullishPattern
+        insertLabel(camdCONST.getPatternHammer(), camdCONST.getColorLightGreen())
+    if isInvertedHammer and showInvertedHammer and showBullishPattern
+        insertLabel(camdCONST.getPatternInvertedHammer(), camdCONST.getColorLightGreen())
+    if isHangingMan and showHangingMan and showBearishPattern
+        insertLabel(camdCONST.getPatternHangingMan(), camdCONST.getColorLightRed())
+    if isShootingStar and showShootingStar and showBearishPattern
+        insertLabel(camdCONST.getPatternShootingStar(), camdCONST.getColorLightRed())
+    if isBullishBeltHoldLine and showBullishBeltHoldLine and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishBeltHoldLine(), camdCONST.getColorLightGreen())    
+    if isBearishBeltHoldLine and showBearishBeltHoldLine and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishBeltHoldLine(), camdCONST.getColorLightRed())    
+    if isBullishEngulfing and showBullishEngulfing and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishEngulfing(), camdCONST.getColorLightGreen())
+    if isBearishEngulfing and showBearishEngulfing and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishEngulfing(), camdCONST.getColorLightRed())
+    if isBullishHarami and showBullishHarami and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishHarami(), camdCONST.getColorLightGreen())
+    if isBearishHarami and showBearishHarami and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishHarami(), camdCONST.getColorLightRed())
+    if isHomingPigeon and showHomingPigeon and showBullishPattern
+        insertLabel(camdCONST.getPatternHomingPigeon(), camdCONST.getColorLightGreen())
+    if isThreeBlackCrows and showThreeBlackCrows and showBearishPattern
+        insertLabel(camdCONST.getPatternThreeBlackCrows(), camdCONST.getColorLightRed())
+    if isThreeIdenticalBlackCrows and showThreeIdenticalBlackCrows and showBearishPattern
+        insertLabel(camdCONST.getPatternThreeIdenticalBlackCrows(), camdCONST.getColorLightRed())
+    if isAdvanceBlock and showAdvanceBlock and showBearishPattern
+        insertLabel(camdCONST.getPatternAdvanceBlock(), camdCONST.getColorLightRed())
+    if isDeliberation and showDeliberation and showBearishPattern
+        insertLabel(camdCONST.getPatternDeliberation(), camdCONST.getColorLightRed())
+    if isUniqueThreeRiversBottom and showUniqueThreeRiversBottom and showBullishPattern
+        insertLabel(camdCONST.getPatternUniqueThreeRiversBottom(), camdCONST.getColorLightGreen())
+    if isThreeStarsInTheSouth and showThreeStarsInTheSouth and showBullishPattern
+        insertLabel(camdCONST.getPatternThreeStarsInSouth(), camdCONST.getColorLightGreen())
+    if isBullishBreakaway and showBullishBreakaway and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishBreakaway(), camdCONST.getColorLightGreen())
+    if isBearishBreakaway and showBearishBreakaway and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishBreakaway(), camdCONST.getColorLightRed())
+    if isConcealingBabySwallow and showConcealingBabySwallow and showBullishPattern
+        insertLabel(camdCONST.getPatternConcealingBabySwallow(), camdCONST.getColorLightGreen())
+    if isStickSandwich and showStickSandwich and showBullishPattern
+        insertLabel(camdCONST.getPatternStickSandwich(), camdCONST.getColorLightGreen())
+    if isMatchingLow and showMatchingLow and showBullishPattern
+        insertLabel(camdCONST.getPatternMatchingLow(), camdCONST.getColorLightGreen())
+    if isLadderBottom and showLadderBottom and showBullishPattern
+        insertLabel(camdCONST.getPatternLadderBottom(), camdCONST.getColorLightGreen())
+    if isThrustingLine and showThrustingLine and showBearishPattern
+        insertLabel(camdCONST.getPatternThrustingLine(), camdCONST.getColorLightRed())
+    if isInNeck and showInNeck and showBearishPattern
+        insertLabel(camdCONST.getPatternInNeck(), camdCONST.getColorLightRed())
+    if isOnNeck and showOnNeck and showBearishPattern
+        insertLabel(camdCONST.getPatternOnNeck(), camdCONST.getColorLightRed())
+    if isBullishSeparatingLines and showBullishSeparatingLines and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishSeparatingLines(), camdCONST.getColorLightGreen())
+    if isBearishSeparatingLines and showBearishSeparatingLines and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishSeparatingLines(), camdCONST.getColorLightRed())
+    if isRisingThreeMethods and showRisingThreeMethods and showBullishPattern
+        insertLabel(camdCONST.getPatternRisingThreeMethods(), camdCONST.getColorLightGreen())
+    if isFallingThreeMethods and showFallingThreeMethods and showBearishPattern
+        insertLabel(camdCONST.getPatternFallingThreeMethods(), camdCONST.getColorLightRed())
+    if isMatHoldBullish and showMatHoldBullish and showBullishPattern
+        insertLabel(camdCONST.getPatternMatHoldBullish(), camdCONST.getColorLightGreen())
+    if isBullishThreeLineStrike and showBullishThreeLineStrike and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishThreeLineStrike(), camdCONST.getColorLightGreen())
+    if isBearishThreeLineStrike and showBearishThreeLineStrike and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishThreeLineStrike(), camdCONST.getColorLightRed())
+    if isBullishDojiStar and showBullishDojiStar and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishDojiStar(), camdCONST.getColorLightGreen())
+    if isThreeWhiteSoldiers and showThreeWhiteSoldiers and showBullishPattern
+        insertLabel(camdCONST.getPatternThreeWhiteSoldiers(), camdCONST.getColorLightGreen())
+    if isBullishCounterAttackLine and showBullishCounterAttackLine and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishCounterAttackLine(), camdCONST.getColorLightGreen())
+    if isBearishCounterAttackLine and showBearishCounterAttackLine and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishCounterAttackLine(), camdCONST.getColorLightRed())
+    if isBearishDojiStar and showBearishDojiStar and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishDojiStar(), camdCONST.getColorLightRed())
+    if isMorningStar and showMorningStar and showBullishPattern
+        insertLabel(camdCONST.getPatternMorningStar(), camdCONST.getColorLightGreen())
+    if isEveningStar and showEveningStar and showBearishPattern
+        insertLabel(camdCONST.getPatternEveningStar(), camdCONST.getColorLightRed())
+    if isMorningDojiStar and showMorningDojiStar and showBullishPattern
+        insertLabel(camdCONST.getPatternMorningDojiStar(), camdCONST.getColorLightGreen())
+    if isEveningDojiStar and showEveningDojiStar and showBearishPattern
+        insertLabel(camdCONST.getPatternEveningDojiStar(), camdCONST.getColorLightRed())
+    if isBullisAbandonedBaby and showBullishAbandonedBaby and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishAbandonedBaby(), camdCONST.getColorLightGreen())
+    if isBearisAbandonedBaby and showBearishAbandonedBaby and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishAbandonedBaby(), camdCONST.getColorLightRed())
+    if isBullishTriStar and showBullishTriStar and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishTriStar(), camdCONST.getColorLightGreen())
+    if isBearishTriStar and showBearishTriStar and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishTriStar(), camdCONST.getColorLightRed())
+    if isUpsideGapTwoCrows and showUpsideGapTwoCrows and showBearishPattern
+        insertLabel(camdCONST.getPatternUpsideGapTwoCrows(), camdCONST.getColorLightRed())
+    if isTwoCrows and showTwoCrows and showBearishPattern
+        insertLabel(camdCONST.getPatternTwoCrows(), camdCONST.getColorLightRed())
+    if isUpsideTasukiGap and showUpsideTasukiGap and showBullishPattern
+        insertLabel(camdCONST.getPatternUpsideTasukiGap(), camdCONST.getColorLightGreen())
+    if isDownsideTasukiGap and showDownsideTasukiGap and showBearishPattern
+        insertLabel(camdCONST.getPatternDownsideTasukiGap(), camdCONST.getColorLightRed())
+    if isUpsideGapThreeMethods and showUpsideGapThreeMethods and showBullishPattern
+        insertLabel(camdCONST.getPatternUpsideGapThreeMethods(), camdCONST.getColorLightGreen())
+    if isDownsideGapThreeMethods and showDownsideGapThreeMethods and showBearishPattern
+        insertLabel(camdCONST.getPatternDownsideGapThreeMethods(), camdCONST.getColorLightRed())
+    if isUpsideGappingSideBySideWhiteLines and showUpsideGappingSideBySideWhiteLines and showBullishPattern
+        insertLabel(camdCONST.getPatternUpsideGappingSideBySideWhiteLines(), camdCONST.getColorLightGreen())
+    if isDownsideGappingSideBySideWhiteLines and showDownsideGappingSideBySideWhiteLines and showBearishPattern
+        insertLabel(camdCONST.getPatternDownsideGappingSideBySideWhiteLines(), camdCONST.getColorLightRed())
+    if isBullishKicking and showBullishKicking and showBullishPattern
+        insertLabel(camdCONST.getPatternBullishKicking(), camdCONST.getColorLightGreen())
+    if isBearishKicking and showBearishKicking and showBearishPattern
+        insertLabel(camdCONST.getPatternBearishKicking(), camdCONST.getColorLightRed())
+
+// Media móvil
+float wma21 = na
+float sma30 = na
+float ema50 = na
+float ema150 = na
+float sma200 = na
+
+if shwoMA == true
+    if shwoWMA21 == true
+        wma21 := ta.wma(source = close, length = 21)
+    if showSMA30 == true
+        sma30 := ta.sma(source = close, length = 30)
+    if showEMA50 == true
+        ema50 := ta.ema(source = close, length = 50)    
+    if showEMA150 == true
+        ema150 := ta.ema(source = close, length = 150)
+    if showSMA200 == true
+        sma200 := ta.sma(source = close, length = 200)
+
+plot(series = wma21, title = "WMA21", color = color.rgb(255, 255, 255), linewidth = 1)
+plot(series = sma30, title = "SMA30", color = color.rgb(50, 50, 255), linewidth = 1)
+plot(series = ema50, title = "EMA50", color = camdCONST.getColorYellow(), linewidth = 1)
+plot(series = ema150, title = "EMA150", color = color.rgb(255, 255, 255), linewidth = 4)
+plot(series = sma200, title = "SMA200", color = color.rgb(50, 50, 255), linewidth = 4)
+
+if barstate.islast
+    label.new(x = bar_index, y = wma21, text = "WMA 21", color = color.rgb(0, 0, 0, 255), style = label.style_label_left, textcolor = color.white, size = size.normal, textalign = text.align_right)
+    label.new(x = bar_index, y = sma30, text = "SMA 30", color = color.rgb(0, 0, 0, 255), style = label.style_label_left, textcolor = color.white, size = size.normal, textalign = text.align_right)
+    label.new(x = bar_index, y = ema50, text = "EMA 50", color = color.rgb(0, 0, 0, 255), style = label.style_label_left, textcolor = color.white, size = size.normal, textalign = text.align_right)
+    label.new(x = bar_index, y = ema150, text = "EMA 150", color = color.rgb(0, 0, 0, 255), style = label.style_label_left, textcolor = color.white, size = size.normal, textalign = text.align_right)
+    label.new(x = bar_index, y = sma200, text = "SMA 200", color = color.rgb(0, 0, 0, 255), style = label.style_label_left, textcolor = color.white, size = size.normal, textalign = text.align_right)
+
+    // Tabla
+    float b = beta.calc_beta(benchmark)
+    program = cedears_programs.get_cedear_program(syminfo.tickerid)
+    if show_country and not na(program) and not na(b)
+
+        upColor = #26A69A
+        dnColor = #EF5350
+        naColor = color.blue
+        upColor2 = #00FF98
+        dnColor2 = #FF9800
+
+        table info_tab = table.new(position = position.bottom_right, columns = 4, rows = 2, border_width = 3)
+
+        table.cell(table_id = info_tab, column = 0, row = 0, text = "β", text_color = naColor, bgcolor = color.new(naColor, 80), text_size = size.small)
+        table.cell(table_id = info_tab, column = 0, row = 1, text = str.tostring(b), text_color = b >= 0 ? upColor2 : dnColor2, bgcolor = b >= 0 ? color.new(upColor, 80) : color.new(dnColor, 80), text_size = size.small)
+
+        table.cell(table_id = info_tab, column = 1, row = 0, text = "Industria", text_color = naColor, bgcolor = color.new(naColor, 80), text_size = size.small)
+        table.cell(table_id = info_tab, column = 1, row = 1, text = syminfo.industry, text_color = color.white, bgcolor = color.new(color.white, 95), text_size = size.small)
+
+        table.cell(table_id = info_tab, column = 2, row = 0, text = "Tipo de mercado", text_color = naColor, bgcolor = color.new(naColor, 80), text_size = size.small)
+        table.cell(table_id = info_tab, column = 2, row = 1, text = syminfo.type, text_color = color.white, bgcolor = color.new(color.white, 95), text_size = size.small)
+
+        table.cell(table_id = info_tab, column = 3, row = 0, text = "País de origen", text_color = naColor, bgcolor = color.new(naColor, 80), text_size = size.small)
+        table.cell(table_id = info_tab, column = 3, row = 1, text = program.country, text_color = color.white, bgcolor = color.new(color.white, 95), text_size = size.small)
+
+// Puntos de inflexión
+if shwoPivotPoint
+    camdPivotPoints.drawPivots(leftLenH, rightLenH, leftLenL, rightLenL, labelColorH, textColorH, labelColorL, textColorL)
+
+// Volúmen por encima del promedio
+avgVolume = ta.sma(volume, 10)
+volColor = volume > avgVolume and showVolume ? color.rgb(240, 230, 140) : na
+barcolor(volColor)
